@@ -165,7 +165,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
+    <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Desktop centering container - account for sidebar */}
       <div className="flex-1 flex justify-center md:-ml-16">
         <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 flex flex-col h-full">
@@ -278,7 +278,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 overflow-hidden chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6 flex-shrink-0`}>
+      <div className={`pt-3 pb-6 px-6 overflow-hidden chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6 flex-shrink-0`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
         <div className="w-full max-w-2xl lg:max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
