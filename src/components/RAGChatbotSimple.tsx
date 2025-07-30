@@ -166,31 +166,6 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
   return (
     <div className={`flex flex-col h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
-      {/* Theme Toggle Button - Top Left */}
-      <div className="absolute top-4 left-4 z-10">
-        <button
-          onClick={toggleTheme}
-          className={`p-2 rounded-full transition-all duration-200 ${
-            isDarkTheme 
-              ? 'bg-gray-800 hover:bg-gray-700 text-white' 
-              : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-          }`}
-          title={isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-        >
-          {isDarkTheme ? (
-            // Sun icon for dark theme
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          ) : (
-            // Moon icon for light theme
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          )}
-        </button>
-      </div>
-
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
         {messages.length === 0 && (
@@ -221,11 +196,11 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               </div>
               
               {/* Message Bubble */}
-                                <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
-                    message.role === 'user'
+              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
+                message.role === 'user'
                   ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
-                  }`}>
+              }`}>
                 {message.isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-1">
@@ -345,6 +320,35 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               </svg>
             </button>
           </form>
+          
+          {/* Theme Toggle Button - Beneath the chat input */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={toggleTheme}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                isDarkTheme 
+                  ? 'bg-gray-800 hover:bg-gray-700 text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+              }`}
+              title={isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            >
+              {isDarkTheme ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  <span className="text-sm">Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                  <span className="text-sm">Dark Mode</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
