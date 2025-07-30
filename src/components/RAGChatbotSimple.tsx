@@ -167,7 +167,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   return (
     <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
       {/* Desktop centering container - account for sidebar */}
-      <div className="flex-1 flex justify-center md:-ml-20">
+      <div className="flex-1 flex justify-center md:-ml-16">
         <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 flex flex-col h-full">
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '200px' }}>
