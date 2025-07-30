@@ -113,7 +113,7 @@ export const BibleApp = ({ className = "" }: BibleAppProps) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               {canGoBack && (
@@ -175,7 +175,7 @@ export const BibleApp = ({ className = "" }: BibleAppProps) => {
       </motion.div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl px-4 py-6">
         <AnimatePresence mode="wait">
           {viewMode === 'books' && (
             <motion.div
