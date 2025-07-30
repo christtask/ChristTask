@@ -177,10 +177,7 @@ export const SidebarNavigation = ({ activeTab, onTabChange }: SidebarNavigationP
         />
       )}
 
-      {/* Main content margin */}
-      <div className={`transition-all duration-300 hidden md:block ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
-        {/* This div ensures the main content is pushed to the right */}
-      </div>
+
     </>
   );
 }; 
