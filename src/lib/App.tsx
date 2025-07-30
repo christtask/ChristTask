@@ -78,9 +78,6 @@ function AppShell() {
       case 'forum':
         navigate('/forum');
         break;
-      case 'profile':
-        navigate('/profile');
-        break;
       default:
         break;
     }

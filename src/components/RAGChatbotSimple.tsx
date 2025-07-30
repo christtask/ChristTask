@@ -165,9 +165,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`flex flex-col h-screen overflow-hidden ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
+    <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container">
         {messages.length === 0 && (
           <div className="text-center py-8 sm:py-12 px-4">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
@@ -273,7 +273,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 overflow-hidden ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6`}>
+      <div className={`pt-3 pb-6 px-6 overflow-hidden chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6`}>
         <div className="w-full max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea

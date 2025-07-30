@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Home, MessageSquare, User, BookOpen } from "lucide-react";
+import { Home, MessageSquare, BookOpen } from "lucide-react";
 
 interface BottomNavigationProps {
-  activeTab: 'home' | 'chatbot' | 'bible' | 'forum' | 'profile';
-  onTabChange: (tab: 'home' | 'chatbot' | 'bible' | 'forum' | 'profile') => void;
+  activeTab: 'home' | 'chatbot' | 'bible' | 'forum';
+  onTabChange: (tab: 'home' | 'chatbot' | 'bible' | 'forum') => void;
 }
 
 export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => {
@@ -53,17 +53,6 @@ export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationPro
         >
           <MessageSquare className={`w-6 h-6 mb-0.5 ${activeTab === 'forum' ? 'text-[#8B5CF6]' : 'text-zinc-400'}`} />
           <span className="text-xs font-medium">Forum</span>
-        </button>
-        {/* Profile Tab */}
-        <button
-          onClick={() => onTabChange('profile')}
-          className={`flex flex-col items-center justify-center flex-1 py-2 min-w-0 min-h-[44px] ${
-            activeTab === 'profile' ? 'text-[#8B5CF6]' : 'text-zinc-300'
-          }`}
-          style={{ background: activeTab === 'profile' ? 'rgba(139,92,246,0.08)' : 'transparent', borderRadius: 12 }}
-        >
-          <User className={`w-6 h-6 mb-0.5 ${activeTab === 'profile' ? 'text-[#8B5CF6]' : 'text-zinc-400'}`} />
-          <span className="text-xs font-medium">Profile</span>
         </button>
       </div>
     </nav>
