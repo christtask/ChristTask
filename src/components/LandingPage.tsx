@@ -317,17 +317,17 @@ export const LandingPage = ({
           </button>
           <span className={`font-medium text-base transition-colors duration-200 ${selectedPlan === 'monthly' ? 'text-[#8B5CF6]' : 'text-[#888888]'}`}>Monthly</span>
         </div>
-        <div className="relative flex flex-col items-center justify-center rounded-2xl" style={{ background: '#1a1a1a', padding: '24px 56px', minWidth: 480, maxWidth: 600, width: '100%' }}>
+        <div className="relative flex flex-col items-center justify-center rounded-2xl" style={{ background: '#1a1a1a', padding: '20px 24px', minWidth: '320px', maxWidth: '480px', width: '100%' }}>
           {/* EXCLUSIVE Badge */}
           <div className="absolute top-0 right-0 mt-4 mr-4 px-4 py-1 rounded-full text-xs font-semibold" style={{ background: '#18181b', color: '#8B5CF6', letterSpacing: '0.08em' }}>EXCLUSIVE</div>
           <div className="flex flex-col w-full">
-            <h3 className="mb-[30px] text-[28px] font-medium text-white">Full Access</h3>
-            <div className="flex items-end mb-[30px]">
-              <span className="text-[56px] font-thin text-white">{selectedPlan === 'weekly' ? '£4.50' : '£11.99'}</span>
-              <span className="text-[18px] font-normal text-[#888888] ml-2 mb-2">/{selectedPlan === 'weekly' ? 'week' : 'month'}</span>
+            <h3 className="mb-6 text-2xl font-medium text-white">Full Access</h3>
+            <div className="flex items-end mb-6">
+              <span className="text-4xl font-thin text-white">{selectedPlan === 'weekly' ? '£4.50' : '£11.99'}</span>
+              <span className="text-base font-normal text-[#888888] ml-2 mb-1">/{selectedPlan === 'weekly' ? 'week' : 'month'}</span>
             </div>
-            <p className="text-[16px] text-[#cccccc] mb-[30px]">Full access to ChristTask's faith-powered tools, Scripture-rooted learning, and community.</p>
-            <ul className="text-[15px] text-[#cccccc] space-y-3 text-left mb-[30px]">
+            <p className="text-sm text-[#cccccc] mb-6">Full access to ChristTask's faith-powered tools, Scripture-rooted learning, and community.</p>
+            <ul className="text-sm text-[#cccccc] space-y-2 text-left mb-6">
               <li className="flex items-center"><span className="mr-2 text-[#8B5CF6]">&#10003;</span> Unlimited use of all tools</li>
               <li className="flex items-center"><span className="mr-2 text-[#8B5CF6]">&#10003;</span> AI-powered answers</li>
               <li className="flex items-center"><span className="mr-2 text-[#8B5CF6]">&#10003;</span> Private community access</li>
