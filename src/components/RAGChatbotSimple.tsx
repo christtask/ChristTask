@@ -221,11 +221,11 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               </div>
               
               {/* Message Bubble */}
-              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
-                message.role === 'user'
+                                <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
+                    message.role === 'user'
                   ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
-              }`}>
+                  }`}>
                 {message.isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-1">
