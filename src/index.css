@@ -75,7 +75,6 @@ body {
   /* Ensure chatbot interface doesn't scroll behind bottom nav */
   .chatbot-interface {
     padding-bottom: 80px !important;
-    min-height: calc(100vh - 80px) !important;
   }
   
   /* Fix for mobile chat input area */
@@ -88,11 +87,12 @@ body {
     z-index: 998 !important;
   }
   
-  /* Ensure messages container doesn't overlap with input */
+  /* Ensure messages container can scroll properly */
   .messages-container {
     padding-bottom: 120px !important;
-    height: calc(100vh - 200px) !important;
     overflow-y: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
 }
 
