@@ -166,110 +166,115 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container">
-        {messages.length === 0 && (
-          <div className="text-center py-8 sm:py-12 px-4">
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-              isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'
-            }`}>
-              <span className={`text-sm font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</span>
-            </div>
-            <p className={`mb-6 text-sm sm:text-base ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate Ready?</p>
-          </div>
-        )}
-        
-        {messages.map((message, index) => (
-          <div
-            key={message.id}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in duration-500 ease-out`}
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className={`flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-              {/* Avatar */}
-              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                message.role === 'user' 
-                  ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-gray-400 text-white'
-                  : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-800'
-              }`}>
-                {message.role === 'user' ? 'U' : 'ChristTask'}
+      {/* Desktop centering container */}
+      <div className="flex-1 flex justify-center">
+        <div className="w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl">
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container h-full">
+            {messages.length === 0 && (
+              <div className="text-center py-8 sm:py-12 px-4">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                  isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'
+                }`}>
+                  <span className={`text-sm font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</span>
+                </div>
+                <p className={`mb-6 text-sm sm:text-base ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate Ready?</p>
               </div>
-              
-              {/* Message Bubble */}
-              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative break-words ${
-                message.role === 'user'
-                  ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
-                  : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {message.isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="flex space-x-1">
-                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`}></div>
-                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.1s' }}></div>
-                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                    <span className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Typing...</span>
+            )}
+            
+            {messages.map((message, index) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in duration-500 ease-out`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className={`flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                  {/* Avatar */}
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                    message.role === 'user' 
+                      ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-gray-400 text-white'
+                      : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-800'
+                  }`}>
+                    {message.role === 'user' ? 'U' : 'ChristTask'}
                   </div>
-                ) : (
-                  <div>
-                    <div className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed break-words">{message.content}</div>
-                    
-
-                    
-                    {/* Scripture References */}
-                    {message.scriptureReferences && message.scriptureReferences.length > 0 && (
-                      <div className="mt-2">
-                        <div className={`text-xs font-medium mb-1 ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Scripture References:</div>
-                        <div className={`text-xs ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
-                          {message.scriptureReferences.join(', ')}
+                  
+                  {/* Message Bubble */}
+                  <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative break-words ${
+                    message.role === 'user'
+                      ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
+                      : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {message.isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="flex space-x-1">
+                          <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`}></div>
+                          <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.1s' }}></div>
+                          <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.2s' }}></div>
                         </div>
+                        <span className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Typing...</span>
                       </div>
-                    )}
-                    
-                    {/* Topic and Difficulty */}
-                    {(message.topic || message.difficulty) && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {message.topic && (
-                          <span className="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">
-                            {message.topic}
-                          </span>
+                    ) : (
+                      <div>
+                        <div className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed break-words">{message.content}</div>
+                        
+
+                        
+                        {/* Scripture References */}
+                        {message.scriptureReferences && message.scriptureReferences.length > 0 && (
+                          <div className="mt-2">
+                            <div className={`text-xs font-medium mb-1 ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Scripture References:</div>
+                            <div className={`text-xs ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
+                              {message.scriptureReferences.join(', ')}
+                            </div>
+                          </div>
                         )}
-                        {message.difficulty && (
-                          <span className="text-xs bg-green-900 text-green-200 px-2 py-1 rounded">
-                            {message.difficulty}
-                          </span>
+                        
+                        {/* Topic and Difficulty */}
+                        {(message.topic || message.difficulty) && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {message.topic && (
+                              <span className="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">
+                                {message.topic}
+                              </span>
+                            )}
+                            {message.difficulty && (
+                              <span className="text-xs bg-green-900 text-green-200 px-2 py-1 rounded">
+                                {message.difficulty}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        
+                        <div className={`text-xs mt-2 ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
+                          {formatTime(message.timestamp)}
+                        </div>
+                        
+                        {/* Copy Button - Only for chatbot messages */}
+                        {message.role === 'assistant' && (
+                          <button
+                            onClick={() => navigator.clipboard.writeText(message.content)}
+                            className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 ${
+                              isDarkTheme 
+                                ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
+                                : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
+                            }`}
+                            title="Copy message"
+                          >
+                            Copy
+                          </button>
                         )}
                       </div>
-                    )}
-                    
-                    <div className={`text-xs mt-2 ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
-                      {formatTime(message.timestamp)}
-                    </div>
-                    
-                    {/* Copy Button - Only for chatbot messages */}
-                    {message.role === 'assistant' && (
-                      <button
-                        onClick={() => navigator.clipboard.writeText(message.content)}
-                        className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 ${
-                          isDarkTheme 
-                            ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
-                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
-                        }`}
-                        title="Copy message"
-                      >
-                        Copy
-                      </button>
                     )}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-        
+            ))}
+            
 
-        
-        <div ref={messagesEndRef} />
+            
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
       </div>
 
       {/* Input Area - Claude Style */}
