@@ -170,7 +170,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       <div className="flex-1 flex justify-center">
         <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 flex flex-col h-full">
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '200px' }}>
             {messages.length === 0 && (
               <div className="text-center py-8 sm:py-12 px-4">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
