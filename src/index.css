@@ -905,7 +905,6 @@ body, button, .jenni-text {
 body, html, #root {
   margin: 0 !important;
   padding: 0 !important;
-  background: #000000 !important;
 }
 
 .christian-bg::before {
