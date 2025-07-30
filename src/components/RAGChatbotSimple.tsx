@@ -29,6 +29,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true); // true = dark theme, false = light theme
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -48,6 +49,10 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [inputValue]);
+
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
 
   const sendMessage = async (content: string) => {
     if (!content.trim() || isLoading) return;
@@ -160,15 +165,42 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`flex flex-col h-screen bg-black text-white ${className}`}>
+    <div className={`flex flex-col h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
+      {/* Theme Toggle Button - Top Left */}
+      <div className="absolute top-4 left-4 z-10">
+        <button
+          onClick={toggleTheme}
+          className={`p-2 rounded-full transition-all duration-200 ${
+            isDarkTheme 
+              ? 'bg-gray-800 hover:bg-gray-700 text-white' 
+              : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+          }`}
+          title={isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+        >
+          {isDarkTheme ? (
+            // Sun icon for dark theme
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          ) : (
+            // Moon icon for light theme
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-center py-8 sm:py-12 px-4">
-            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-sm font-bold text-white">ChristTask</span>
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+              isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'
+            }`}>
+              <span className={`text-sm font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</span>
             </div>
-            <p className="text-gray-400 mb-6 text-sm sm:text-base">Debate Ready?</p>
+            <p className={`mb-6 text-sm sm:text-base ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate Ready?</p>
           </div>
         )}
         
@@ -182,26 +214,26 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               {/* Avatar */}
               <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                 message.role === 'user' 
-                  ? 'bg-gray-600 text-white' 
-                  : 'bg-gray-800 text-white'
+                  ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-gray-400 text-white'
+                  : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-800'
               }`}>
                 {message.role === 'user' ? 'U' : 'ChristTask'}
               </div>
               
               {/* Message Bubble */}
-                                <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
-                    message.role === 'user'
-                      ? 'bg-gray-600 text-white'
-                      : 'bg-gray-800 text-white'
-                  }`}>
+              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
+                message.role === 'user'
+                  ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
+                  : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
+              }`}>
                 {message.isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`}></div>
+                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.1s' }}></div>
+                      <div className={`w-2 h-2 rounded-full animate-bounce ${isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'}`} style={{ animationDelay: '0.2s' }}></div>
                     </div>
-                    <span className="text-sm text-gray-400">Typing...</span>
+                    <span className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Typing...</span>
                   </div>
                 ) : (
                   <div>
@@ -212,8 +244,8 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                     {/* Scripture References */}
                     {message.scriptureReferences && message.scriptureReferences.length > 0 && (
                       <div className="mt-2">
-                        <div className="text-xs font-medium text-gray-400 mb-1">Scripture References:</div>
-                        <div className="text-xs text-gray-500">
+                        <div className={`text-xs font-medium mb-1 ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Scripture References:</div>
+                        <div className={`text-xs ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
                           {message.scriptureReferences.join(', ')}
                         </div>
                       </div>
@@ -235,7 +267,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                       </div>
                     )}
                     
-                    <div className="text-xs text-gray-500 mt-2">
+                    <div className={`text-xs mt-2 ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
                       {formatTime(message.timestamp)}
                     </div>
                     
@@ -243,7 +275,11 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                     {message.role === 'assistant' && (
                       <button
                         onClick={() => navigator.clipboard.writeText(message.content)}
-                        className="absolute bottom-2 right-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white p-1.5 rounded-md text-xs transition-all duration-200"
+                        className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 ${
+                          isDarkTheme 
+                            ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
+                            : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
+                        }`}
                         title="Copy message"
                       >
                         Copy
@@ -262,7 +298,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className="pt-3 pb-6 px-6 bg-black">
+      <div className={`pt-3 pb-6 px-6 ${isDarkTheme ? 'bg-black' : 'bg-white'}`}>
         <div className="w-full max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
@@ -281,9 +317,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                 padding: '16px 20px',
                 fontSize: '16px',
                 lineHeight: '1.5',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backgroundColor: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                color: isDarkTheme ? '#ffffff' : '#000000',
+                border: isDarkTheme ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.1)',
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)'
               }}
@@ -291,14 +327,15 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
             <button
               type="submit"
               disabled={isLoading || !inputValue.trim()}
-              className="absolute disabled:cursor-not-allowed text-white transition-all duration-200 rounded-full flex items-center justify-center"
+              className="absolute disabled:cursor-not-allowed transition-all duration-200 rounded-full flex items-center justify-center"
               style={{
                 width: '40px',
                 height: '40px',
                 right: '8px',
                 bottom: '8px',
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backgroundColor: isDarkTheme ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)',
+                color: isDarkTheme ? '#ffffff' : '#000000',
+                border: isDarkTheme ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.1)',
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)'
               }}
