@@ -15,9 +15,10 @@ import { useAuth } from '@/hooks/useAuth';
 interface SidebarNavigationProps {
   activeTab: 'home' | 'chatbot' | 'bible' | 'forum';
   onTabChange: (tab: 'home' | 'chatbot' | 'bible' | 'forum') => void;
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
-export const SidebarNavigation = ({ activeTab, onTabChange }: SidebarNavigationProps) => {
+export const SidebarNavigation = ({ activeTab, onTabChange, onCollapseChange }: SidebarNavigationProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { signOut } = useAuth();
   const [isDarkTheme, setIsDarkTheme] = useState(true); // Add theme state
@@ -77,7 +78,9 @@ export const SidebarNavigation = ({ activeTab, onTabChange }: SidebarNavigationP
   ];
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    onCollapseChange?.(newCollapsedState);
   };
 
   return (

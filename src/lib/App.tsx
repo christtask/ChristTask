@@ -43,6 +43,7 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
 
 function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
@@ -106,11 +107,17 @@ function AppShell() {
     <div className="flex min-h-screen h-screen">
       {/* Desktop Sidebar Navigation */}
       {!isMobile && (
-        <SidebarNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+        <SidebarNavigation 
+          activeTab={activeTab} 
+          onTabChange={handleTabChange}
+          onCollapseChange={setSidebarCollapsed}
+        />
       )}
       
       {/* Main Content Area */}
-      <div className={`flex-1 overflow-auto ${!isMobile ? 'ml-64' : 'pb-20'}`}>
+      <div className={`flex-1 overflow-auto transition-all duration-300 ${
+        !isMobile ? (sidebarCollapsed ? 'ml-16' : 'ml-64') : 'pb-20'
+      }`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
         
         {/* Mobile Bottom Navigation */}
