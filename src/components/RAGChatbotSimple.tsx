@@ -165,9 +165,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`flex flex-col h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
+    <div className={`flex flex-col h-screen overflow-hidden ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`}>
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-center py-8 sm:py-12 px-4">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
@@ -196,7 +196,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               </div>
               
               {/* Message Bubble */}
-              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative ${
+              <div className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-3 relative break-words ${
                 message.role === 'user'
                   ? isDarkTheme ? 'bg-gray-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'
@@ -212,7 +212,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                   </div>
                 ) : (
                   <div>
-                    <div className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed">{message.content}</div>
+                    <div className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed break-words">{message.content}</div>
                     
 
                     
@@ -273,7 +273,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 ${isDarkTheme ? 'bg-black' : 'bg-white'}`}>
+      <div className={`pt-3 pb-6 px-6 overflow-hidden ${isDarkTheme ? 'bg-black' : 'bg-white'}`}>
         <div className="w-full max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
@@ -282,7 +282,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask about Christian apologetics..."
-              className="w-full rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 text-base"
+              className="w-full rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 text-base break-words"
               rows={2}
               disabled={isLoading}
               style={{
