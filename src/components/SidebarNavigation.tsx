@@ -67,7 +67,7 @@ export const SidebarNavigation = ({ activeTab, onTabChange }: SidebarNavigationP
     <>
       {/* Sidebar */}
       <aside 
-        className={`fixed top-0 left-0 h-full bg-black border-r border-gray-700 z-50 flex flex-col shadow-2xl transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full bg-black border-r border-gray-700 z-50 flex flex-col shadow-2xl transition-all duration-300 ease-in-out hidden md:flex ${
           isCollapsed ? 'w-16' : 'w-64'
         }`}
       >
@@ -149,13 +149,13 @@ export const SidebarNavigation = ({ activeTab, onTabChange }: SidebarNavigationP
       {/* Overlay for mobile */}
       {!isCollapsed && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:block"
           onClick={() => setIsCollapsed(true)}
         />
       )}
 
       {/* Main content margin */}
-      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+      <div className={`transition-all duration-300 hidden md:block ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
         {/* This div ensures the main content is pushed to the right */}
       </div>
     </>

@@ -13,9 +13,11 @@ import { RAGTest } from "../components/RAGTest";
 import { SimpleRAGTest } from "../components/SimpleRAGTest";
 import { useState, useEffect } from 'react';
 import { SidebarNavigation } from '../components/SidebarNavigation';
+import { BottomNavigation } from '../components/BottomNavigation';
 import ChatbotPage from '../pages/ChatbotPage';
 import { AuthPage } from "../components/AuthPage";
 import { useAuth } from '../hooks/useAuth';
+import { useIsMobile } from '../hooks/use-mobile';
 
 const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMfKSsjtBP5h47m7G2HvnpKEyXYJNZ9WyvCVcl1TJTSRNQMvaQju6d00YaYe3dhu");
 
@@ -44,6 +46,7 @@ function AppShell() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
+  const isMobile = useIsMobile();
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -101,12 +104,22 @@ function AppShell() {
     );
   }
 
-  // If user is authenticated, show sidebar navigation
+  // If user is authenticated, show responsive navigation
   return (
     <div className="flex min-h-screen h-screen">
-      <SidebarNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-      <div className="flex-1 overflow-auto">
+      {/* Desktop Sidebar Navigation */}
+      {!isMobile && (
+        <SidebarNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      )}
+      
+      {/* Main Content Area */}
+      <div className={`flex-1 overflow-auto ${!isMobile ? 'ml-64' : 'pb-20'}`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
+        
+        {/* Mobile Bottom Navigation */}
+        {isMobile && (
+          <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+        )}
       </div>
     </div>
   );

@@ -273,7 +273,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 overflow-hidden ${isDarkTheme ? 'bg-black' : 'bg-white'}`}>
+      <div className={`pt-3 pb-6 px-6 overflow-hidden ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6`}>
         <div className="w-full max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
