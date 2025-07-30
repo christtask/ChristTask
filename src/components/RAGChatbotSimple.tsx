@@ -42,6 +42,12 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // Apply theme to document body
+  useEffect(() => {
+    document.body.style.backgroundColor = isDarkTheme ? '#000000' : '#ffffff';
+    document.body.style.color = isDarkTheme ? '#ffffff' : '#000000';
+  }, [isDarkTheme]);
+
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
@@ -52,6 +58,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
+    // Also update the document body background
+    document.body.style.backgroundColor = !isDarkTheme ? '#000000' : '#ffffff';
+    document.body.style.color = !isDarkTheme ? '#ffffff' : '#000000';
   };
 
   const sendMessage = async (content: string) => {
