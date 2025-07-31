@@ -42,12 +42,29 @@ const countries = countriesRaw.map(c => {
   let postalPlaceholder = '';
   if (c.cca2 === 'US') postalPlaceholder = 'ZIP Code';
   else if (c.cca2 === 'GB') postalPlaceholder = 'Postal Code';
+  
+  // Set exchange rates for different currencies
+  let rate = 1;
+  if (c.cca2 === 'US') {
+    rate = 1.25; // USD to GBP conversion (approximate)
+    currencySymbol = '$';
+  } else if (c.cca2 === 'GB') {
+    rate = 1; // GBP base
+    currencySymbol = '£';
+  } else if (c.cca2 === 'EU') {
+    rate = 1.15; // EUR to GBP conversion (approximate)
+    currencySymbol = '€';
+  } else {
+    // Fallback for other countries
+    currencySymbol = currencySymbol || '$';
+  }
+  
   return {
     code: c.cca2,
     name: c.name.common,
     currency: currencySymbol,
     currencyCode: currencyCode,
-    rate: 1,
+    rate: rate,
     needsPostalCode,
     postalPlaceholder
   };
@@ -389,7 +406,7 @@ const PaymentPage = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-bold text-slate-800">
-                          {getCountryInfo(selectedCountry).currency}{getConvertedPrice(plan.price)}
+                          {getCountryInfo(selectedCountry).currency || '$'}{getConvertedPrice(plan.price)}
                         </div>
                         <div className="text-xs text-slate-500">
                           {key === 'weekly' ? 'per week' : 'per month'}
