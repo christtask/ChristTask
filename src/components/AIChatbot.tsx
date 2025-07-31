@@ -197,7 +197,7 @@ const FullChatInterface = ({
       className="flex flex-col h-full bg-black text-white"
     >
       {/* Fixed Header */}
-      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-black">
+      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-black mt-12">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
             <span className="text-lg font-bold text-white">CA</span>

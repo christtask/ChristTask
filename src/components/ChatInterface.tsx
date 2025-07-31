@@ -364,7 +364,7 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] bg-[#18181b] w-full min-h-screen">
       {/* Fixed Header */}
-      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-[#18181b]">
+      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-[#18181b] mt-12">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
             <span className="text-lg font-bold text-white">CA</span>
