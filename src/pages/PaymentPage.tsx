@@ -51,11 +51,246 @@ const countries = countriesRaw.map(c => {
   } else if (c.cca2 === 'GB') {
     rate = 1; // GBP base
     currencySymbol = '£';
-  } else if (c.cca2 === 'EU') {
-    rate = 1.15; // EUR to GBP conversion (approximate)
+  } else if (c.cca2 === 'CA') {
+    rate = 1.70; // CAD to GBP conversion
+    currencySymbol = 'C$';
+  } else if (c.cca2 === 'AU') {
+    rate = 1.90; // AUD to GBP conversion
+    currencySymbol = 'A$';
+  } else if (c.cca2 === 'DE' || c.cca2 === 'FR' || c.cca2 === 'IT' || c.cca2 === 'ES' || c.cca2 === 'NL' || c.cca2 === 'BE' || c.cca2 === 'AT' || c.cca2 === 'IE' || c.cca2 === 'FI' || c.cca2 === 'PT' || c.cca2 === 'GR' || c.cca2 === 'SI' || c.cca2 === 'CY' || c.cca2 === 'MT' || c.cca2 === 'SK' || c.cca2 === 'EE' || c.cca2 === 'LV' || c.cca2 === 'LT' || c.cca2 === 'LU') {
+    rate = 1.15; // EUR to GBP conversion
     currencySymbol = '€';
+  } else if (c.cca2 === 'JP') {
+    rate = 180; // JPY to GBP conversion
+    currencySymbol = '¥';
+  } else if (c.cca2 === 'IN') {
+    rate = 100; // INR to GBP conversion
+    currencySymbol = '₹';
+  } else if (c.cca2 === 'BR') {
+    rate = 6.20; // BRL to GBP conversion
+    currencySymbol = 'R$';
+  } else if (c.cca2 === 'MX') {
+    rate = 21.50; // MXN to GBP conversion
+    currencySymbol = '$';
+  } else if (c.cca2 === 'AR') {
+    rate = 1200; // ARS to GBP conversion
+    currencySymbol = '$';
+  } else if (c.cca2 === 'CL') {
+    rate = 1100; // CLP to GBP conversion
+    currencySymbol = '$';
+  } else if (c.cca2 === 'CO') {
+    rate = 4800; // COP to GBP conversion
+    currencySymbol = '$';
+  } else if (c.cca2 === 'PE') {
+    rate = 4.50; // PEN to GBP conversion
+    currencySymbol = 'S/';
+  } else if (c.cca2 === 'ZA') {
+    rate = 23.50; // ZAR to GBP conversion
+    currencySymbol = 'R';
+  } else if (c.cca2 === 'NG') {
+    rate = 1800; // NGN to GBP conversion
+    currencySymbol = '₦';
+  } else if (c.cca2 === 'KE') {
+    rate = 180; // KES to GBP conversion
+    currencySymbol = 'KSh';
+  } else if (c.cca2 === 'GH') {
+    rate = 15.50; // GHS to GBP conversion
+    currencySymbol = '₵';
+  } else if (c.cca2 === 'UG') {
+    rate = 4800; // UGX to GBP conversion
+    currencySymbol = 'USh';
+  } else if (c.cca2 === 'TZ') {
+    rate = 3100; // TZS to GBP conversion
+    currencySymbol = 'TSh';
+  } else if (c.cca2 === 'RW') {
+    rate = 1500; // RWF to GBP conversion
+    currencySymbol = 'FRw';
+  } else if (c.cca2 === 'ET') {
+    rate = 65; // ETB to GBP conversion
+    currencySymbol = 'Br';
+  } else if (c.cca2 === 'SD') {
+    rate = 600; // SDG to GBP conversion
+    currencySymbol = 'ج.س';
+  } else if (c.cca2 === 'EG') {
+    rate = 38; // EGP to GBP conversion
+    currencySymbol = 'E£';
+  } else if (c.cca2 === 'MA') {
+    rate = 12.50; // MAD to GBP conversion
+    currencySymbol = 'د.م.';
+  } else if (c.cca2 === 'TN') {
+    rate = 3.80; // TND to GBP conversion
+    currencySymbol = 'د.ت';
+  } else if (c.cca2 === 'DZ') {
+    rate = 135; // DZD to GBP conversion
+    currencySymbol = 'د.ج';
+  } else if (c.cca2 === 'LY') {
+    rate = 6.20; // LYD to GBP conversion
+    currencySymbol = 'ل.د';
+  } else if (c.cca2 === 'PK') {
+    rate = 350; // PKR to GBP conversion
+    currencySymbol = '₨';
+  } else if (c.cca2 === 'BD') {
+    rate = 130; // BDT to GBP conversion
+    currencySymbol = '৳';
+  } else if (c.cca2 === 'LK') {
+    rate = 380; // LKR to GBP conversion
+    currencySymbol = 'Rs';
+  } else if (c.cca2 === 'NP') {
+    rate = 160; // NPR to GBP conversion
+    currencySymbol = '₨';
+  } else if (c.cca2 === 'MM') {
+    rate = 2600; // MMK to GBP conversion
+    currencySymbol = 'K';
+  } else if (c.cca2 === 'KH') {
+    rate = 4800; // KHR to GBP conversion
+    currencySymbol = '៛';
+  } else if (c.cca2 === 'LA') {
+    rate = 21000; // LAK to GBP conversion
+    currencySymbol = '₭';
+  } else if (c.cca2 === 'VN') {
+    rate = 30000; // VND to GBP conversion
+    currencySymbol = '₫';
+  } else if (c.cca2 === 'TH') {
+    rate = 43; // THB to GBP conversion
+    currencySymbol = '฿';
+  } else if (c.cca2 === 'MY') {
+    rate = 5.80; // MYR to GBP conversion
+    currencySymbol = 'RM';
+  } else if (c.cca2 === 'SG') {
+    rate = 1.70; // SGD to GBP conversion
+    currencySymbol = 'S$';
+  } else if (c.cca2 === 'ID') {
+    rate = 19000; // IDR to GBP conversion
+    currencySymbol = 'Rp';
+  } else if (c.cca2 === 'PH') {
+    rate = 70; // PHP to GBP conversion
+    currencySymbol = '₱';
+  } else if (c.cca2 === 'KR') {
+    rate = 1650; // KRW to GBP conversion
+    currencySymbol = '₩';
+  } else if (c.cca2 === 'CN') {
+    rate = 9.20; // CNY to GBP conversion
+    currencySymbol = '¥';
+  } else if (c.cca2 === 'HK') {
+    rate = 9.80; // HKD to GBP conversion
+    currencySymbol = 'HK$';
+  } else if (c.cca2 === 'TW') {
+    rate = 38; // TWD to GBP conversion
+    currencySymbol = 'NT$';
+  } else if (c.cca2 === 'NZ') {
+    rate = 2.05; // NZD to GBP conversion
+    currencySymbol = 'NZ$';
+  } else if (c.cca2 === 'CH') {
+    rate = 1.10; // CHF to GBP conversion
+    currencySymbol = 'CHF';
+  } else if (c.cca2 === 'NO') {
+    rate = 13.50; // NOK to GBP conversion
+    currencySymbol = 'kr';
+  } else if (c.cca2 === 'SE') {
+    rate = 13.20; // SEK to GBP conversion
+    currencySymbol = 'kr';
+  } else if (c.cca2 === 'DK') {
+    rate = 8.70; // DKK to GBP conversion
+    currencySymbol = 'kr';
+  } else if (c.cca2 === 'PL') {
+    rate = 5.20; // PLN to GBP conversion
+    currencySymbol = 'zł';
+  } else if (c.cca2 === 'CZ') {
+    rate = 28.50; // CZK to GBP conversion
+    currencySymbol = 'Kč';
+  } else if (c.cca2 === 'HU') {
+    rate = 420; // HUF to GBP conversion
+    currencySymbol = 'Ft';
+  } else if (c.cca2 === 'RO') {
+    rate = 5.80; // RON to GBP conversion
+    currencySymbol = 'lei';
+  } else if (c.cca2 === 'BG') {
+    rate = 2.25; // BGN to GBP conversion
+    currencySymbol = 'лв';
+  } else if (c.cca2 === 'HR') {
+    rate = 8.50; // HRK to GBP conversion
+    currencySymbol = 'kn';
+  } else if (c.cca2 === 'RS') {
+    rate = 130; // RSD to GBP conversion
+    currencySymbol = 'дин';
+  } else if (c.cca2 === 'UA') {
+    rate = 45; // UAH to GBP conversion
+    currencySymbol = '₴';
+  } else if (c.cca2 === 'BY') {
+    rate = 3.20; // BYN to GBP conversion
+    currencySymbol = 'Br';
+  } else if (c.cca2 === 'KZ') {
+    rate = 580; // KZT to GBP conversion
+    currencySymbol = '₸';
+  } else if (c.cca2 === 'UZ') {
+    rate = 15000; // UZS to GBP conversion
+    currencySymbol = 'so'm';
+  } else if (c.cca2 === 'KG') {
+    rate = 110; // KGS to GBP conversion
+    currencySymbol = 'с';
+  } else if (c.cca2 === 'TJ') {
+    rate = 12.50; // TJS to GBP conversion
+    currencySymbol = 'ЅМ';
+  } else if (c.cca2 === 'TM') {
+    rate = 4.20; // TMT to GBP conversion
+    currencySymbol = 'T';
+  } else if (c.cca2 === 'AF') {
+    rate = 90; // AFN to GBP conversion
+    currencySymbol = '؋';
+  } else if (c.cca2 === 'IR') {
+    rate = 520000; // IRR to GBP conversion
+    currencySymbol = '﷼';
+  } else if (c.cca2 === 'IQ') {
+    rate = 1950; // IQD to GBP conversion
+    currencySymbol = 'ع.د';
+  } else if (c.cca2 === 'SA') {
+    rate = 4.70; // SAR to GBP conversion
+    currencySymbol = 'ر.س';
+  } else if (c.cca2 === 'AE') {
+    rate = 4.60; // AED to GBP conversion
+    currencySymbol = 'د.إ';
+  } else if (c.cca2 === 'QA') {
+    rate = 4.65; // QAR to GBP conversion
+    currencySymbol = 'ر.ق';
+  } else if (c.cca2 === 'KW') {
+    rate = 0.38; // KWD to GBP conversion
+    currencySymbol = 'د.ك';
+  } else if (c.cca2 === 'BH') {
+    rate = 0.47; // BHD to GBP conversion
+    currencySymbol = '.د.ب';
+  } else if (c.cca2 === 'OM') {
+    rate = 0.48; // OMR to GBP conversion
+    currencySymbol = 'ر.ع.';
+  } else if (c.cca2 === 'JO') {
+    rate = 0.89; // JOD to GBP conversion
+    currencySymbol = 'د.ا';
+  } else if (c.cca2 === 'LB') {
+    rate = 89000; // LBP to GBP conversion
+    currencySymbol = 'ل.ل';
+  } else if (c.cca2 === 'SY') {
+    rate = 13000; // SYP to GBP conversion
+    currencySymbol = 'ل.س';
+  } else if (c.cca2 === 'YE') {
+    rate = 250; // YER to GBP conversion
+    currencySymbol = '﷼';
+  } else if (c.cca2 === 'IL') {
+    rate = 4.20; // ILS to GBP conversion
+    currencySymbol = '₪';
+  } else if (c.cca2 === 'TR') {
+    rate = 38; // TRY to GBP conversion
+    currencySymbol = '₺';
+  } else if (c.cca2 === 'GE') {
+    rate = 3.20; // GEL to GBP conversion
+    currencySymbol = '₾';
+  } else if (c.cca2 === 'AM') {
+    rate = 520; // AMD to GBP conversion
+    currencySymbol = '֏';
+  } else if (c.cca2 === 'AZ') {
+    rate = 1.70; // AZN to GBP conversion
+    currencySymbol = '₼';
   } else {
-    // Fallback for other countries
+    // Fallback for other countries - use USD as default
+    rate = 1.25;
     currencySymbol = currencySymbol || '$';
   }
   
