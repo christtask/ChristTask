@@ -194,9 +194,22 @@ const FullChatInterface = ({
         ease: [0.4, 0, 0.2, 1], // cubic-bezier(0.4, 0, 0.2, 1)
         staggerChildren: 0.1 
       }}
-      className="flex flex-col h-full bg-black text-white overflow-hidden"
+      className="flex flex-col h-full bg-black text-white"
     >
-      {/* Messages Area */}
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-black">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+            <span className="text-lg font-bold text-white">CA</span>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-white">ChristTask</h2>
+            <p className="text-sm text-gray-400">Debate ready?</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {messages.map((message) => (
           <div
@@ -252,8 +265,8 @@ const FullChatInterface = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-800 p-4 bg-black">
+      {/* Fixed Input Area */}
+      <div className="flex-shrink-0 border-t border-gray-800 p-4 bg-black">
         {/* Example Questions */}
         <div className="flex flex-wrap gap-2 mb-3">
           {exampleQuestions.slice(0, 3).map((question, index) => (

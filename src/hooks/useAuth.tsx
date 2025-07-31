@@ -109,11 +109,64 @@ export const AuthProvider = ({ children }: { children: any }) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-    return { data, error };
+    try {
+      console.log('Starting signin process...');
+      console.log('Email:', email);
+      console.log('Password length:', password.length);
+      
+      // Log environment variables (without exposing sensitive data)
+      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Present' : 'Missing');
+      console.log('Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      console.log('Signin response:', { 
+        data: data ? { user: data.user?.id, session: !!data.session } : null, 
+        error 
+      });
+
+      if (error) {
+        console.error('Signin error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
+        
+        // Provide more specific error messages
+        let userFriendlyMessage = error.message;
+        
+        if (error.message.includes('Invalid login credentials')) {
+          userFriendlyMessage = 'Invalid email or password. Please check your credentials.';
+        } else if (error.message.includes('Email not confirmed')) {
+          userFriendlyMessage = 'Please check your email and click the confirmation link before signing in.';
+        } else if (error.message.includes('Too many requests')) {
+          userFriendlyMessage = 'Too many login attempts. Please wait a moment before trying again.';
+        } else if (error.status === 400) {
+          userFriendlyMessage = 'Invalid request. Please check your email and password format.';
+        }
+        
+        return { 
+          data: null, 
+          error: { 
+            ...error, 
+            message: userFriendlyMessage 
+          } 
+        };
+      }
+
+      return { data, error: null };
+    } catch (err) {
+      console.error('Signin exception:', err);
+      return { 
+        data: null, 
+        error: { 
+          message: 'Network error or service unavailable. Please try again.' 
+        } 
+      };
+    }
   };
 
   const signOut = async () => {

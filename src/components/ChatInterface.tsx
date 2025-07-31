@@ -363,7 +363,20 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] bg-[#18181b] w-full min-h-screen">
-      {/* Chat messages area */}
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-4 border-b border-gray-800 bg-[#18181b]">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+            <span className="text-lg font-bold text-white">CA</span>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-white">ChristTask</h2>
+            <p className="text-sm text-gray-400">Debate ready?</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Scrollable Chat messages area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 mt-12">Start a conversation with Debate AI Chat!</div>
@@ -386,8 +399,8 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      {/* Input area fixed at the bottom - Claude-style */}
-      <div className="w-full bg-[#232323] p-6 border-t border-gray-800" style={{ position: 'sticky', bottom: 0, left: 0, right: 0, zIndex: 10 }}>
+      {/* Fixed Input area at the bottom */}
+      <div className="flex-shrink-0 w-full bg-[#232323] p-6 border-t border-gray-800">
         <div className="w-full max-w-4xl mx-auto">
           <form
             onSubmit={e => { 
