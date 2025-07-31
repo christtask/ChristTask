@@ -224,7 +224,7 @@ const countries = countriesRaw.map(c => {
     currencySymbol = '₸';
   } else if (c.cca2 === 'UZ') {
     rate = 15000; // UZS to GBP conversion
-    currencySymbol = 'so'm';
+    currencySymbol = "so'm";
   } else if (c.cca2 === 'KG') {
     rate = 110; // KGS to GBP conversion
     currencySymbol = 'с';
