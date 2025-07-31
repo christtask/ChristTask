@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useStripe, useElements, CardElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Globe } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useGeolocation } from '@/hooks/useGeolocation';
 import countriesRaw from '../data/countries.js';
 import {
   Command,
@@ -315,9 +316,19 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('monthly');
-  const [selectedCountry, setSelectedCountry] = useState('GB');
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
+  
+  // Auto-detect user location
+  const { countryCode, countryName, isLoading: locationLoading, error: locationError } = useGeolocation();
+  const [selectedCountry, setSelectedCountry] = useState('GB');
+  
+  // Update selected country when geolocation is detected
+  useEffect(() => {
+    if (countryCode && !locationLoading) {
+      setSelectedCountry(countryCode);
+    }
+  }, [countryCode, locationLoading]);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -770,16 +781,37 @@ const PaymentPage = () => {
 
                   {/* Country Selection */}
                   <div>
-                    <Label htmlFor="country" className="text-sm font-medium text-slate-700">
-                      Country
-                    </Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="country" className="text-sm font-medium text-slate-700">
+                        Country
+                      </Label>
+                      {!locationLoading && countryCode && countryCode === selectedCountry && (
+                        <div className="flex items-center text-xs text-green-600">
+                          <Globe className="w-3 h-3 mr-1" />
+                          Auto-detected
+                        </div>
+                      )}
+                      {!locationLoading && locationError && (
+                        <div className="flex items-center text-xs text-orange-600">
+                          <Globe className="w-3 h-3 mr-1" />
+                          Location detection failed
+                        </div>
+                      )}
+                    </div>
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
                           className="mt-1 w-full px-3 py-2 bg-white text-black border border-slate-200 rounded-md text-left"
                         >
-                          {countries.find(c => c.code === selectedCountry)?.name || 'Select country...'}
+                          {locationLoading ? (
+                            <span className="flex items-center">
+                              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+                              Detecting location...
+                            </span>
+                          ) : (
+                            countries.find(c => c.code === selectedCountry)?.name || 'Select country...'
+                          )}
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="p-0 w-[320px]">
