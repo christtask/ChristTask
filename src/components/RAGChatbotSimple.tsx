@@ -175,11 +175,24 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
   return (
     <div className={`flex flex-col h-screen overflow-hidden chatbot-interface ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+      {/* Fixed Header */}
+      <div className={`flex-shrink-0 p-4 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'} mt-12`}>
+        <div className="flex items-center space-x-3">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'}`}>
+            <span className={`text-lg font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>CA</span>
+          </div>
+          <div>
+            <h2 className={`text-lg font-semibold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</h2>
+            <p className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate ready?</p>
+          </div>
+        </div>
+      </div>
+
       {/* Desktop centering container - account for sidebar */}
       <div className="flex-1 flex justify-center md:-ml-16">
         <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 flex flex-col h-full">
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container" style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '200px' }}>
+          {/* Scrollable Messages Area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-4 messages-container" style={{ maxHeight: 'calc(100vh - 280px)', minHeight: '200px' }}>
             {messages.length === 0 && (
               <div className="text-center py-8 sm:py-12 px-4">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
@@ -286,8 +299,8 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
         </div>
       </div>
 
-      {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 overflow-hidden chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6 flex-shrink-0`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+      {/* Fixed Input Area - Claude Style */}
+      <div className={`flex-shrink-0 pt-3 pb-6 px-6 overflow-hidden chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
         <div className="w-full max-w-2xl lg:max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
