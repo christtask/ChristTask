@@ -753,20 +753,7 @@ const PaymentPage = () => {
                     </Label>
                     <div className="mt-1">
                       <CardElement
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: '16px',
-                              color: '#000000',
-                              '::placeholder': {
-                                color: '#666666',
-                              },
-                            },
-                            invalid: {
-                              color: '#9e2146',
-                            },
-                          },
-                        }}
+                        options={cardElementOptions}
                       />
                     </div>
                   </div>
