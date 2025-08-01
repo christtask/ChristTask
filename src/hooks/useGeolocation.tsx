@@ -21,8 +21,13 @@ export const useGeolocation = () => {
       try {
         setState(prev => ({ ...prev, isLoading: true, error: null }));
         
-        // Try IP-based geolocation first
-        const location = await geolocationService.getUserLocation();
+        // Try IP-based geolocation first with timeout
+        const locationPromise = geolocationService.getUserLocation();
+        const timeoutPromise = new Promise<null>((resolve) => 
+          setTimeout(() => resolve(null), 3000) // 3 second timeout
+        );
+        
+        const location = await Promise.race([locationPromise, timeoutPromise]);
         
         if (location) {
           setState({
@@ -49,10 +54,11 @@ export const useGeolocation = () => {
         }
       } catch (error) {
         console.warn('Geolocation failed:', error);
+        // Don't block the payment process - just use defaults
         setState(prev => ({ 
           ...prev, 
           isLoading: false, 
-          error: 'Failed to detect location' 
+          error: null // Don't show error to user
         }));
       }
     };

@@ -53,50 +53,88 @@ export class GeolocationService {
         }
       } catch (error) {
         console.warn('Geolocation service failed:', error);
+        // Continue to next service without blocking
         continue;
       }
     }
 
+    // If all services fail, return null but don't throw
     return null;
   }
 
   private async tryIpApi(): Promise<GeolocationResponse | null> {
-    const response = await fetch('https://ip-api.com/json/?fields=countryCode,country,city,region');
-    if (!response.ok) throw new Error('IP-API request failed');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
     
-    const data = await response.json();
-    return {
-      country_code: data.countryCode,
-      country_name: data.country,
-      city: data.city,
-      region: data.region
-    };
+    try {
+      const response = await fetch('https://ip-api.com/json/?fields=countryCode,country,city,region', {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error('IP-API request failed');
+      
+      const data = await response.json();
+      return {
+        country_code: data.countryCode,
+        country_name: data.country,
+        city: data.city,
+        region: data.region
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
+    }
   }
 
   private async tryIpInfo(): Promise<GeolocationResponse | null> {
-    const response = await fetch('https://ipinfo.io/json');
-    if (!response.ok) throw new Error('IPInfo request failed');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
     
-    const data = await response.json();
-    return {
-      country_code: data.country,
-      country_name: data.country,
-      city: data.city,
-      region: data.region
-    };
+    try {
+      const response = await fetch('https://ipinfo.io/json', {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error('IPInfo request failed');
+      
+      const data = await response.json();
+      return {
+        country_code: data.country,
+        country_name: data.country,
+        city: data.city,
+        region: data.region
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
+    }
   }
 
   private async tryIpApiCo(): Promise<GeolocationResponse | null> {
-    const response = await fetch('https://ipapi.co/json/');
-    if (!response.ok) throw new Error('IPAPI.co request failed');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
     
-    const data = await response.json();
-    return {
-      country_code: data.country_code,
-      country_name: data.country_name,
-      city: data.city,
-      region: data.region
-    };
+    try {
+      const response = await fetch('https://ipapi.co/json/', {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error('IPAPI.co request failed');
+      
+      const data = await response.json();
+      return {
+        country_code: data.country_code,
+        country_name: data.country_name,
+        city: data.city,
+        region: data.region
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
+    }
   }
 
   // Fallback method using browser geolocation (requires user permission)
