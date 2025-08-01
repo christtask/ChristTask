@@ -433,7 +433,7 @@ const PaymentPage = () => {
       if (signupError) {
         console.error('Signup failed:', signupError);
         setError(signupError.message);
-        setLoading(false);
+        setLoading(false); 
         return;
       }
       
@@ -447,7 +447,7 @@ const PaymentPage = () => {
       // Get Stripe elements
       if (!stripe || !elements) {
         setError('Stripe is not loaded. Please refresh the page.');
-        setLoading(false);
+        setLoading(false); 
         return;
       }
       
@@ -473,44 +473,44 @@ const PaymentPage = () => {
       
       // TEMPORARY: Try backend first, then fallback to frontend-only
       try {
-        const res = await fetch('https://christtask-backend.onrender.com/create-subscription', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: formData.email.trim(),
-            userId: signupData?.user?.id || null, // Pass the user ID from signup
-            couponCode: formData.couponCode.trim(),
-            plan: selectedPlan,
-            paymentMethodId: paymentMethod.id,
-            country: selectedCountry,
-          }),
-        });
+      const res = await fetch('https://christtask-backend.onrender.com/create-subscription', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          userId: signupData?.user?.id || null, // Pass the user ID from signup
+          couponCode: formData.couponCode.trim(),
+          plan: selectedPlan,
+          paymentMethodId: paymentMethod.id,
+          country: selectedCountry,
+        }),
+      });
         
         console.log('Backend response status:', res.status, res.statusText);
         
         if (res.ok) {
           // Backend worked - proceed normally
-          const responseData = await res.json();
-          
-          // Automatically sign in the user after successful payment
-          console.log('Payment successful, signing in user...');
-          const { error: signInError } = await signIn(formData.email, formData.password);
-          
-          if (signInError) {
-            console.warn('Auto sign-in failed, but payment was successful:', signInError);
+      const responseData = await res.json();
+      
+      // Automatically sign in the user after successful payment
+      console.log('Payment successful, signing in user...');
+      const { error: signInError } = await signIn(formData.email, formData.password);
+      
+      if (signInError) {
+        console.warn('Auto sign-in failed, but payment was successful:', signInError);
             // Even if sign-in fails, we can still allow access since payment was successful
             // Store payment success in localStorage as a fallback
             localStorage.setItem('paymentSuccess', 'true');
             localStorage.setItem('paidUserEmail', formData.email);
-          } else {
-            console.log('User automatically signed in successfully');
+      } else {
+        console.log('User automatically signed in successfully');
             // Clear any fallback data since sign-in worked
             localStorage.removeItem('paymentSuccess');
             localStorage.removeItem('paidUserEmail');
-          }
-          
-          // Show success message
-          toast({
-            title: "Payment Successful!",
+      }
+      
+      // Show success message
+      toast({
+        title: "Payment Successful!",
             description: "Your account has been created and subscription activated. You can access the chatbot immediately! Email confirmation is optional for future logins.",
           });
           
@@ -519,10 +519,10 @@ const PaymentPage = () => {
           
           // Show loading screen and redirect
           setShowLoading(true);
-          setTimeout(() => {
+      setTimeout(() => {
             console.log('Redirecting to chatbot after successful payment...');
-            navigate('/chatbot');
-          }, 2000);
+        navigate('/chatbot');
+      }, 2000);
           return;
         } else {
           console.error('Backend error response:', {
