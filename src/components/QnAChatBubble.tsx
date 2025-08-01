@@ -66,7 +66,7 @@ export default function QnAChatBubble() {
   }, [aiCharIndex, startAiTyping]);
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col gap-1 items-center py-4 mt-4 sm:py-6 sm:mt-6 ml-16">
+    <div ref={containerRef} className="w-full flex flex-col gap-1 items-center py-4 mt-4 sm:py-6 sm:mt-6">
       {/* User Message (received, gray) */}
       <div className="flex w-full justify-start">
         <div className="bg-gray-300 text-gray-900 px-3 py-2 sm:px-4 sm:py-2 rounded-2xl rounded-bl-md max-w-[90vw] sm:max-w-[75%] shadow text-sm sm:text-base font-medium">
@@ -104,13 +104,13 @@ export default function QnAChatBubble() {
         </div>
       )}
       {/* Subtext below bubbles */}
-      <div className="w-full flex justify-center mt-[2cm] -ml-12">
+      <div className="w-full flex justify-center mt-[2cm]">
         <span className="text-gray-400 text-center font-medium max-w-xs" style={{ fontFamily: 'Inter, "Inter Regular", Arial, sans-serif', fontSize: '18px' }}>
           Have the perfect answer every time even when faced with difficulty.
         </span>
       </div>
       {/* Why ChristTask text */}
-      <div className="w-full flex justify-center mt-[3cm] -ml-12">
+      <div className="w-full flex justify-center mt-[3cm]">
         <span className="text-center font-bold max-w-xs" style={{ 
           fontFamily: 'Inter, "Inter Regular", Arial, sans-serif', 
           fontSize: '20px',
@@ -121,7 +121,7 @@ export default function QnAChatBubble() {
       </div>
       
       {/* Reddit Testimonial */}
-      <div className="w-full flex justify-center mt-6 -ml-12">
+      <div className="w-full flex justify-center mt-6">
         <div className="max-w-md w-full">
           <RedditTestimonial
             username="u/nico14301"
