@@ -470,12 +470,12 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                             </button>
                             
                             {/* Copy Button */}
-                            <button
+                          <button
                               onClick={() => handleCopyMessage(message.id, message.content)}
                               className={`p-1.5 rounded-md text-xs transition-all duration-200 flex items-center gap-1 ${
-                                isDarkTheme 
-                                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
-                                  : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
+                              isDarkTheme 
+                                ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
+                                : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
                               } ${copiedMessageId === message.id ? 'bg-green-600 text-white' : ''}`}
                               title={copiedMessageId === message.id ? "Copied!" : "Copy message"}
                             >
@@ -494,7 +494,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                                   Copy
                                 </>
                               )}
-                            </button>
+                          </button>
                           </div>
                         )}
                       </div>

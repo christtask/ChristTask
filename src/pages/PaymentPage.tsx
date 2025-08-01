@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStripe, useElements, CardElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { CheckCircle, ArrowRight, Globe } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { useGeolocation } from '@/hooks/useGeolocation';
+// Removed geolocation import - using static pricing
 import { LoadingScreen } from '@/components/LoadingScreen';
 import countriesRaw from '../data/countries.js';
 import {
@@ -321,16 +321,12 @@ const PaymentPage = () => {
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
   
-  // Auto-detect user location
-  const { countryCode, countryName, isLoading: locationLoading, error: locationError } = useGeolocation();
+  // Static pricing - no geolocation dependency
+  const countryCode = 'GB';
+  const countryName = 'United Kingdom';
+  const locationLoading = false;
+  const locationError = null;
   const [selectedCountry, setSelectedCountry] = useState('GB');
-  
-  // Update selected country when geolocation is detected
-  useEffect(() => {
-    if (countryCode && !locationLoading) {
-      setSelectedCountry(countryCode);
-    }
-  }, [countryCode, locationLoading]);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -579,7 +575,7 @@ const PaymentPage = () => {
           onComplete={() => setShowLoading(false)}
         />
       )}
-      <div className="h-screen flex overflow-hidden bg-white">
+    <div className="h-screen flex overflow-hidden bg-white">
       {/* Left Side - Animated Background */}
       <div className="hidden lg:flex lg:w-2/3 relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900">
         {/* Animated Gradient Background */}
@@ -809,9 +805,9 @@ const PaymentPage = () => {
                   {/* Country Selection */}
                   <div>
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="country" className="text-sm font-medium text-slate-700">
-                        Country
-                      </Label>
+                    <Label htmlFor="country" className="text-sm font-medium text-slate-700">
+                      Country
+                    </Label>
                       {!locationLoading && countryCode && countryCode === selectedCountry && (
                         <div className="flex items-center text-xs text-green-600">
                           <Globe className="w-3 h-3 mr-1" />

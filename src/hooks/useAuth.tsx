@@ -118,10 +118,10 @@ export const AuthProvider = ({ children }: { children: any }) => {
       console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Present' : 'Missing');
       console.log('Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
       
       console.log('Signin response:', { 
         data: data ? { user: data.user?.id, session: !!data.session } : null, 
