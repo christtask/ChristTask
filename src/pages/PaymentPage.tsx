@@ -487,8 +487,19 @@ const PaymentPage = () => {
           country: selectedCountry,
         }),
       });
+      
+      if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error('Payment service is temporarily unavailable. Please try again later.');
+        } else if (res.status === 500) {
+          throw new Error('Server error. Please try again later.');
+        } else {
+          const responseData = await res.json().catch(() => ({}));
+          throw new Error(responseData.error || `Payment failed (${res.status}). Please try again.`);
+        }
+      }
+      
       const responseData = await res.json();
-      if (res.status !== 200) throw new Error(responseData.error || 'Failed to create subscription');
       
       // Automatically sign in the user after successful payment
       console.log('Payment successful, signing in user...');

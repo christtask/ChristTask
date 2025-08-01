@@ -61,7 +61,7 @@ export class GeolocationService {
   }
 
   private async tryIpApi(): Promise<GeolocationResponse | null> {
-    const response = await fetch('http://ip-api.com/json/?fields=countryCode,country,city,region');
+    const response = await fetch('https://ip-api.com/json/?fields=countryCode,country,city,region');
     if (!response.ok) throw new Error('IP-API request failed');
     
     const data = await response.json();
