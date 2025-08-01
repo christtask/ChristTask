@@ -87,7 +87,7 @@ export const SidebarNavigation = ({ activeTab, onTabChange, onCollapseChange }: 
     <>
       {/* Sidebar */}
       <aside 
-        className={`fixed top-0 left-0 h-full border-r z-50 flex flex-col shadow-2xl transition-all duration-300 ease-in-out hidden md:flex ${
+        className={`h-full border-r flex flex-col shadow-2xl transition-all duration-300 ease-in-out hidden md:flex ${
           isCollapsed ? 'w-16' : 'w-64'
         } ${isDarkTheme ? 'bg-black border-gray-700' : 'bg-white border-gray-300'}`}
       >

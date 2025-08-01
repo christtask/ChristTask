@@ -117,7 +117,7 @@ function AppShell() {
       
       {/* Main Content Area */}
       <div className={`flex-1 overflow-auto transition-all duration-300 ${
-        !isMobile ? (sidebarCollapsed ? 'ml-16' : 'ml-64') : 'pb-20'
+        !isMobile ? '' : 'pb-20'
       }`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
         
