@@ -11,6 +11,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
   signOut: () => Promise<void>;
   testConnection: () => Promise<boolean>;
+  hasPaidAccess: () => boolean;
 }
 
 const AuthContext = createContext(undefined);
@@ -67,15 +68,15 @@ export const AuthProvider = ({ children }: { children: any }) => {
       console.log('Redirect URL:', redirectUrl);
     
       const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName || email
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: fullName || email
+          }
         }
-      }
-    });
+      });
 
       console.log('Signup response:', { data, error });
 
@@ -86,11 +87,14 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
       // Check if email confirmation is required
       if (data?.user && !data?.session) {
-        // Email confirmation required
+        // Email confirmation required, but we'll allow the user to proceed
+        // since they're going through the payment flow
+        console.log('Email confirmation required, but allowing user to proceed with payment');
         return { 
           data: { 
             user: data.user, 
-            requiresEmailConfirmation: true 
+            requiresEmailConfirmation: true,
+            session: null // No session yet, but user can still proceed
           }, 
           error: null 
         };
@@ -170,19 +174,38 @@ export const AuthProvider = ({ children }: { children: any }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Signout error:', error);
+      }
+      // Clear any fallback payment data
+      localStorage.removeItem('paymentSuccess');
+      localStorage.removeItem('paidUserEmail');
+    } catch (err) {
+      console.error('Signout exception:', err);
+    }
+  };
+
+  const hasPaidAccess = () => {
+    const paymentSuccess = localStorage.getItem('paymentSuccess');
+    const paidUserEmail = localStorage.getItem('paidUserEmail');
+    return paymentSuccess === 'true' && !!paidUserEmail;
+  };
+
+  const value = {
+    user,
+    session,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    testConnection,
+    hasPaidAccess
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      session,
-      loading,
-      signUp,
-      signIn,
-      signOut,
-      testConnection
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

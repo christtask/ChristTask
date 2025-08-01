@@ -3,13 +3,14 @@ import RAGChatbotSimple from '../components/RAGChatbotSimple';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export default function ChatbotPage() {
-  const { user } = useAuth();
+  const { user, hasPaidAccess } = useAuth();
   const navigate = useNavigate();
 
-  // If user is not logged in, redirect to login
-  if (!user) {
+  // If user is not logged in and doesn't have paid access, redirect to login
+  if (!user && !hasPaidAccess()) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card className="w-full max-w-md">
@@ -27,7 +28,7 @@ export default function ChatbotPage() {
     );
   }
 
-  // User is logged in, show chatbot
+  // User is logged in or has paid access, show chatbot
   return (
     <div className="flex flex-col flex-1 min-h-0 h-full">
       {/* Show chatbot */}

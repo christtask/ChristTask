@@ -496,14 +496,21 @@ const PaymentPage = () => {
           
           if (signInError) {
             console.warn('Auto sign-in failed, but payment was successful:', signInError);
+            // Even if sign-in fails, we can still allow access since payment was successful
+            // Store payment success in localStorage as a fallback
+            localStorage.setItem('paymentSuccess', 'true');
+            localStorage.setItem('paidUserEmail', formData.email);
           } else {
             console.log('User automatically signed in successfully');
+            // Clear any fallback data since sign-in worked
+            localStorage.removeItem('paymentSuccess');
+            localStorage.removeItem('paidUserEmail');
           }
           
           // Show success message
           toast({
             title: "Payment Successful!",
-            description: "Your account has been created and subscription activated. Redirecting to chatbot...",
+            description: "Your account has been created and subscription activated. You can access the chatbot immediately! Please check your email to confirm your account for future logins.",
           });
           
           // Show loading screen and redirect
@@ -554,14 +561,21 @@ const PaymentPage = () => {
       
       if (signInError) {
         console.warn('Auto sign-in failed, but payment was successful:', signInError);
+        // Even if sign-in fails, we can still allow access since payment was successful
+        // Store payment success in localStorage as a fallback
+        localStorage.setItem('paymentSuccess', 'true');
+        localStorage.setItem('paidUserEmail', formData.email);
       } else {
         console.log('User automatically signed in successfully');
+        // Clear any fallback data since sign-in worked
+        localStorage.removeItem('paymentSuccess');
+        localStorage.removeItem('paidUserEmail');
       }
       
       // Show success message
       toast({
         title: "Payment Successful!",
-        description: "Your account has been created and subscription activated. Redirecting to chatbot...",
+        description: "Your account has been created and subscription activated. You can access the chatbot immediately! Please check your email to confirm your account for future logins.",
       });
       
       // Show loading screen and redirect
