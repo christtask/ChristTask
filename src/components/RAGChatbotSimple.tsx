@@ -296,7 +296,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'} pb-20 md:pb-6`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+      <div className={`pt-3 pb-6 px-6 chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
         <div className="w-full max-w-2xl lg:max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
@@ -345,7 +345,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
           </form>
           
           {/* Theme Toggle Button - Beneath the chat input */}
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-2">
             <button
               onClick={toggleTheme}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
