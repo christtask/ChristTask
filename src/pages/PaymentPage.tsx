@@ -513,9 +513,13 @@ const PaymentPage = () => {
             description: "Your account has been created and subscription activated. You can access the chatbot immediately! Email confirmation is optional for future logins.",
           });
           
+          // Force a small delay to ensure authentication state is updated
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
           // Show loading screen and redirect
           setShowLoading(true);
           setTimeout(() => {
+            console.log('Redirecting to chatbot after successful payment...');
             navigate('/chatbot');
           }, 2000);
           return;
@@ -578,9 +582,13 @@ const PaymentPage = () => {
         description: "Your account has been created and subscription activated. You can access the chatbot immediately! Email confirmation is optional for future logins.",
       });
       
+      // Force a small delay to ensure authentication state is updated
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Show loading screen and redirect
       setShowLoading(true);
       setTimeout(() => {
+        console.log('Redirecting to chatbot after successful payment (frontend fallback)...');
         navigate('/chatbot');
       }, 2000);
       
