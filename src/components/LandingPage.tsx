@@ -72,6 +72,7 @@ export const LandingPage = ({
   const navigate = useNavigate();
   const [headingRef, isHeadingVisible] = useScrollAnimation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleStartJourney = () => {
     navigate('/payment');
@@ -80,6 +81,23 @@ export const LandingPage = ({
   const handleHowItWorks = () => {
     navigate('/how-it-works');
   };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const [selectedPlan, setSelectedPlan] = useState('weekly');
 
@@ -96,7 +114,7 @@ export const LandingPage = ({
               <h1 className="text-2xl font-bold text-white">ChristTask</h1>
             </div>
             {/* Hamburger Icon - always visible top right */}
-            <div className="flex items-center absolute right-4 top-4 z-50 space-x-4">
+            <div ref={menuRef} className="flex items-center absolute right-4 top-4 z-[9999] space-x-4">
               <button
                 onClick={() => window.location.href = '/login'}
                 className="text-white hover:text-blue-300 transition-colors duration-200 font-medium"
@@ -112,15 +130,25 @@ export const LandingPage = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
+              
+              {/* Mobile Dropdown Menu */}
+              {menuOpen && (
+                <div className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded-lg shadow-lg flex flex-col w-48 py-2 z-[9999] animate-fade-in-up">
+                  <button 
+                    onClick={() => { setMenuOpen(false); navigate('/'); }} 
+                    className="text-white px-4 py-2 text-left hover:bg-gray-800 transition-colors"
+                  >
+                    Home
+                  </button>
+                  <button 
+                    onClick={() => { setMenuOpen(false); navigate('/payment'); }} 
+                    className="text-white px-4 py-2 text-left hover:bg-gray-800 transition-colors"
+                  >
+                    Chat with AI
+                  </button>
+                </div>
+              )}
             </div>
-            {/* Desktop Nav removed - only hamburger icon remains */}
-            {/* Mobile Dropdown Menu */}
-            {menuOpen && (
-              <div className="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-lg flex flex-col w-48 py-2 z-50 animate-fade-in-up">
-                <button onClick={() => { setMenuOpen(false); navigate('/'); }} className="text-white px-4 py-2 text-left hover:bg-gray-800">Home</button>
-                <button onClick={() => { setMenuOpen(false); navigate('/payment'); }} className="text-white px-4 py-2 text-left hover:bg-gray-800">Chat with AI</button>
-              </div>
-            )}
           </div>
         </div>
       </header>
