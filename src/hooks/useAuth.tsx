@@ -66,14 +66,14 @@ export const AuthProvider = ({ children }: { children: any }) => {
       
       // Create user - email confirmation should now be disabled in Supabase
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName || email
-          }
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName || email
         }
-      });
+      }
+    });
 
       console.log('Signup response:', { data, error });
 
@@ -178,12 +178,12 @@ export const AuthProvider = ({ children }: { children: any }) => {
   };
 
   const value = {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signOut,
+      user,
+      session,
+      loading,
+      signUp,
+      signIn,
+      signOut,
     testConnection,
     hasPaidAccess
   };

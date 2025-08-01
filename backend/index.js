@@ -538,12 +538,20 @@ app.post('/create-subscription', async (req, res) => {
     }
     console.log(`Created subscription: ${subscription.id}`);
     
+    // Log payment method type for debugging
+    const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+    console.log(`Payment method type: ${paymentMethod.type}`);
+    if (paymentMethod.type === 'card') {
+      console.log(`Card brand: ${paymentMethod.card?.brand}`);
+    }
+    
     res.json({ 
       success: true,
       subscriptionId: subscription.id,
       customerId: customer.id,
       status: subscription.status,
-      appliedCoupon: hasValidCoupon ? trimmedCouponCode : null
+      appliedCoupon: hasValidCoupon ? trimmedCouponCode : null,
+      paymentMethodType: paymentMethod.type
     });
   } catch (err) {
     console.error('Stripe error:', err);
