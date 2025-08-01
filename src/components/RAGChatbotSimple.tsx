@@ -184,8 +184,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
               <span className={`text-xs font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>CA</span>
             </div>
             <div>
-              <h2 className={`text-xs font-semibold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</h2>
-              <p className={`text-xs ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate ready?</p>
+              <h2 className={`text-sm font-semibold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</h2>
             </div>
           </div>
           
