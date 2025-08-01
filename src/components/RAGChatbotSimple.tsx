@@ -221,7 +221,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       <div className="flex justify-center md:-ml-16">
         <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4">
           {/* Messages Area */}
-          <div className="p-3 sm:p-4 space-y-4 messages-container">
+          <div className="p-3 sm:p-4 space-y-4 messages-container mt-8 md:mt-16">
             {messages.length === 0 && (
               <div className="text-center py-8 sm:py-12 px-4">
                 <p className={`mb-6 text-sm sm:text-base ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Start a conversation with Debate AI Chat!</p>
