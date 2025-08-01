@@ -175,7 +175,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className} pt-16`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+    <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className} pt-4`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Header */}
       <div className={`p-4 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
         <div className="flex items-center justify-between">
@@ -325,7 +325,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       </div>
 
       {/* Input Area - Claude Style */}
-      <div className={`pt-3 pb-6 px-6 chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+      <div className={`pt-3 px-6 chat-input-area ${isDarkTheme ? 'bg-black' : 'bg-white'}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
         <div className="w-full max-w-2xl lg:max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="relative">
             <textarea
