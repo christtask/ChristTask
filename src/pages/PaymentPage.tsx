@@ -513,7 +513,26 @@ const PaymentPage = () => {
         navigate('/chatbot');
       }, 2000);
     } catch (error: any) {
-      setError(error.message || 'Payment failed.');
+      console.error('Payment error:', error);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Payment failed.';
+      
+      if (error.message) {
+        if (error.message.includes('pattern')) {
+          errorMessage = 'Please check your card details and try again.';
+        } else if (error.message.includes('invalid')) {
+          errorMessage = 'Invalid card information. Please check your details.';
+        } else if (error.message.includes('declined')) {
+          errorMessage = 'Card was declined. Please try a different card.';
+        } else if (error.message.includes('expired')) {
+          errorMessage = 'Card has expired. Please use a different card.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setError(errorMessage);
     }
     setLoading(false);
   };
@@ -532,13 +551,12 @@ const PaymentPage = () => {
         color: '#9e2146',
       },
     },
-    // Only show card number
-    // For Stripe Elements v3, use 'fields' option if available
-    // Otherwise, use custom styling to hide icons/labels
-    // But for most, CardElement shows all fields, so we use custom inputs for expiry/CVC
-    // and set CardElement to show only card number
-    // (Stripe does not officially support cardNumberOnly, but we can use custom styling)
-    // If you want a true card number only, use the CardNumberElement from @stripe/react-stripe-js
+    // Improved validation options
+    classes: {
+      base: 'form-control',
+      focus: 'form-control-focus',
+      invalid: 'form-control-error',
+    },
   };
 
   return (
