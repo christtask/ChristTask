@@ -62,7 +62,7 @@ export const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
   return (
     <div className={`flex flex-col items-center justify-center text-center ${className}`}>
       <div className={`${jesusClassName} mb-3 text-5xl md:text-7xl font-bold`}>Jesus</div>
-      <div className={`${typewriterClassName} text-4xl md:text-6xl font-semibold h-[4rem] md:h-[6rem] flex items-center justify-center`}>
+      <div className={`${typewriterClassName} text-4xl md:text-6xl font-semibold h-[5rem] md:h-[7rem] flex items-center justify-center`}>
         <span className="min-w-[1ch]">
           {currentText}
           <span className="typewriter-cursor">|</span>
