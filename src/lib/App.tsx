@@ -18,6 +18,7 @@ import ChatbotPage from '../pages/ChatbotPage';
 import { AuthPage } from "../components/AuthPage";
 import { useAuth } from '../hooks/useAuth';
 import { useIsMobile } from '../hooks/use-mobile';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMfKSsjtBP5h47m7G2HvnpKEyXYJNZ9WyvCVcl1TJTSRNQMvaQju6d00YaYe3dhu");
 
@@ -44,10 +45,19 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
 function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showInitialLoading, setShowInitialLoading] = useState(true);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
+
+  // Hide initial loading screen after a short delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowInitialLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -83,6 +93,17 @@ function AppShell() {
         break;
     }
   };
+
+  // Show initial loading screen
+  if (showInitialLoading) {
+    return (
+      <LoadingScreen 
+        message="Welcome to ChristTask..." 
+        duration={2000}
+        onComplete={() => setShowInitialLoading(false)}
+      />
+    );
+  }
 
   // Show loading state while checking authentication
   if (loading) {

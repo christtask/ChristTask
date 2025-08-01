@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/hooks/useAuth';
 import { BookOpen, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthPageProps {
@@ -79,6 +80,7 @@ export const AuthPage = ({ onBack, initialMode = 'signin' }: AuthPageProps) => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -102,7 +104,8 @@ export const AuthPage = ({ onBack, initialMode = 'signin' }: AuthPageProps) => {
             title: "Welcome back!",
             description: "You've been signed in successfully."
           });
-          // Redirect to chatbot page after successful login
+          // Show loading screen and redirect to chatbot page
+          setShowLoading(true);
           setTimeout(() => {
             navigate('/chatbot');
           }, 1000);
@@ -140,7 +143,15 @@ export const AuthPage = ({ onBack, initialMode = 'signin' }: AuthPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+    <>
+      {showLoading && (
+        <LoadingScreen 
+          message="Preparing your ChristTask dashboard..." 
+          duration={2000}
+          onComplete={() => setShowLoading(false)}
+        />
+      )}
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
       {/* Header */}
       <header className="py-6 px-6 border-b border-slate-200 dark:border-slate-700">
         <div className="container mx-auto max-w-4xl">
@@ -256,5 +267,6 @@ export const AuthPage = ({ onBack, initialMode = 'signin' }: AuthPageProps) => {
         </div>
       </section>
     </div>
+    </>
   );
 };

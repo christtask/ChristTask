@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import countriesRaw from '../data/countries.js';
 import {
   Command,
@@ -315,6 +316,7 @@ const PaymentPage = () => {
   const elements = useElements();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('monthly');
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
@@ -505,7 +507,8 @@ const PaymentPage = () => {
         description: "Your account has been created and subscription activated. Redirecting to chatbot...",
       });
       
-      // Redirect to chatbot page
+      // Show loading screen and redirect
+      setShowLoading(true);
       setTimeout(() => {
         navigate('/chatbot');
       }, 2000);
@@ -539,7 +542,15 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="h-screen flex overflow-hidden bg-white">
+    <>
+      {showLoading && (
+        <LoadingScreen 
+          message="Setting up your ChristTask account..." 
+          duration={3000}
+          onComplete={() => setShowLoading(false)}
+        />
+      )}
+      <div className="h-screen flex overflow-hidden bg-white">
       {/* Left Side - Animated Background */}
       <div className="hidden lg:flex lg:w-2/3 relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900">
         {/* Animated Gradient Background */}
@@ -897,6 +908,7 @@ const PaymentPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
