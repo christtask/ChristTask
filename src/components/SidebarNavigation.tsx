@@ -168,19 +168,7 @@ export const SidebarNavigation = ({ activeTab, onTabChange, onCollapseChange }: 
           </button>
         </div>
 
-      </aside>
-
-      {/* Overlay for mobile */}
-      {!isCollapsed && (
-        <div 
-          className={`fixed inset-0 z-40 hidden md:block ${
-            isDarkTheme ? 'bg-black bg-opacity-50' : 'bg-gray-900 bg-opacity-30'
-          }`}
-          onClick={() => setIsCollapsed(true)}
-        />
-      )}
-
-
-    </>
-  );
+             </aside>
+     </>
+   );
 }; 
