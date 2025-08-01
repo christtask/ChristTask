@@ -175,9 +175,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   };
 
   return (
-    <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
+    <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className} pt-8`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Header */}
-      <div className={`p-4 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'} mt-2`}>
+      <div className={`p-4 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
         <div className="flex items-center space-x-3">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'}`}>
             <span className={`text-lg font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>CA</span>
