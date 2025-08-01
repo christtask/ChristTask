@@ -52,6 +52,11 @@ function AppShell() {
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
 
+  // Debug logging
+  console.log('AppShell - isMobile:', isMobile);
+  console.log('AppShell - user:', user);
+  console.log('AppShell - loading:', loading);
+
   // Track if user was previously authenticated
   useEffect(() => {
     if (user && !wasAuthenticated) {
@@ -110,7 +115,7 @@ function AppShell() {
       
       {/* Main Content Area */}
       <div className={`flex-1 overflow-auto transition-all duration-300 ${
-        !isMobile ? '' : 'pb-20'
+        isMobile ? 'pb-20' : ''
       }`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
         

@@ -64,14 +64,12 @@ export const AuthProvider = ({ children }: { children: any }) => {
       console.log('Starting signup process...');
       console.log('Email:', email);
       
-      const redirectUrl = `${window.location.origin}/payment`;
-      console.log('Redirect URL:', redirectUrl);
-    
+      // Instead of signUp which sends confirmation emails, 
+      // we'll create the user and immediately sign them in
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName || email
           }
@@ -85,8 +83,24 @@ export const AuthProvider = ({ children }: { children: any }) => {
         return { data: null, error };
       }
 
-      // Return the signup data - the user can proceed with payment
-      // Email confirmation will be handled later if needed
+      // Try to sign in immediately to create a session without email confirmation
+      if (data?.user) {
+        console.log('Attempting immediate sign-in after signup...');
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (signInError) {
+          console.log('Immediate sign-in failed, but user account was created');
+          // Return the signup data even if immediate sign-in fails
+          return { data, error: null };
+        } else {
+          console.log('Immediate sign-in successful');
+          return { data: signInData, error: null };
+        }
+      }
+
       return { data, error: null };
     } catch (err) {
       console.error('Signup exception:', err);

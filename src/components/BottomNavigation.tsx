@@ -7,6 +7,8 @@ interface BottomNavigationProps {
 }
 
 export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => {
+  console.log('BottomNavigation rendered with activeTab:', activeTab);
+  
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full z-[999] bg-[#1a1a1a] backdrop-blur-md border-t border-[#222] shadow-lg">
       <div className="flex justify-between items-center max-w-lg mx-auto px-2 sm:px-4" style={{ minHeight: 60 }}>
