@@ -159,6 +159,40 @@ app.post('/api/test-chat', async (req, res) => {
   }
 });
 
+// Test webhook endpoint for debugging
+app.get('/api/test-webhook', (req, res) => {
+  console.log('🧪 Webhook test endpoint called');
+  
+  const webhookUrl = `${req.protocol}://${req.get('host')}/api/webhook`;
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  
+  res.json({
+    message: 'Webhook test endpoint',
+    webhookUrl: webhookUrl,
+    endpointSecret: endpointSecret ? 'Configured' : 'Missing',
+    timestamp: new Date().toISOString(),
+    instructions: [
+      '1. Check Stripe Dashboard > Webhooks',
+      '2. Verify endpoint URL matches: ' + webhookUrl,
+      '3. Ensure webhook secret is configured',
+      '4. Test with Stripe CLI: stripe listen --forward-to ' + webhookUrl,
+      '5. Check server logs for webhook events'
+    ]
+  });
+});
+
+// Webhook status endpoint
+app.get('/api/webhook-status', (req, res) => {
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  
+  res.json({
+    status: 'Webhook endpoint is running',
+    endpointSecret: endpointSecret ? 'Configured' : 'Missing',
+    webhookUrl: `${req.protocol}://${req.get('host')}/api/webhook`,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Stripe Checkout session creation endpoint
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
@@ -272,22 +306,35 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  console.log('🔔 Webhook received:', {
+    timestamp: new Date().toISOString(),
+    signature: sig ? 'Present' : 'Missing',
+    endpointSecret: endpointSecret ? 'Present' : 'Missing',
+    bodyLength: req.body.length
+  });
+
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    console.log('✅ Webhook signature verified successfully');
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error('❌ Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
+
+  console.log('📦 Webhook event type:', event.type);
+  console.log('🆔 Event ID:', event.id);
 
   // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
       const session = event.data.object;
-      console.log('Checkout completed:', session.id);
-      console.log('Customer:', session.customer_email);
-      console.log('Plan:', session.metadata.plan);
+      console.log('🎉 Checkout completed:', session.id);
+      console.log('👤 Customer:', session.customer_email);
+      console.log('📋 Plan:', session.metadata.plan);
+      console.log('💰 Amount:', session.amount_total);
+      console.log('💳 Payment status:', session.payment_status);
       
       // Here you would typically:
       // 1. Update user subscription in your database
@@ -297,37 +344,37 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
       
     case 'customer.subscription.created':
       const subscription = event.data.object;
-      console.log('Subscription created:', subscription.id);
-      console.log('Plan:', subscription.metadata.plan);
-      console.log('Current period end:', new Date(subscription.current_period_end * 1000));
+      console.log('📅 Subscription created:', subscription.id);
+      console.log('📋 Plan:', subscription.metadata.plan);
+      console.log('📅 Current period end:', new Date(subscription.current_period_end * 1000));
       break;
       
     case 'customer.subscription.updated':
       const updatedSubscription = event.data.object;
-      console.log('Subscription updated:', updatedSubscription.id);
-      console.log('Status:', updatedSubscription.status);
-      console.log('Current period end:', new Date(updatedSubscription.current_period_end * 1000));
+      console.log('🔄 Subscription updated:', updatedSubscription.id);
+      console.log('📊 Status:', updatedSubscription.status);
+      console.log('📅 Current period end:', new Date(updatedSubscription.current_period_end * 1000));
       
       // Handle subscription status changes
       if (updatedSubscription.status === 'active') {
-        console.log('Subscription is active');
+        console.log('✅ Subscription is active');
         // Update user's subscription status in database
       } else if (updatedSubscription.status === 'past_due') {
-        console.log('Subscription is past due - payment failed');
+        console.log('⚠️ Subscription is past due - payment failed');
         // Notify user about payment failure
       } else if (updatedSubscription.status === 'canceled') {
-        console.log('Subscription was canceled');
+        console.log('❌ Subscription was canceled');
         // Update user's subscription status to expired
       } else if (updatedSubscription.status === 'unpaid') {
-        console.log('Subscription is unpaid');
+        console.log('💸 Subscription is unpaid');
         // Update user's subscription status to expired
       }
       break;
       
     case 'customer.subscription.deleted':
       const deletedSubscription = event.data.object;
-      console.log('Subscription deleted:', deletedSubscription.id);
-      console.log('Deletion reason:', deletedSubscription.cancellation_reason);
+      console.log('🗑️ Subscription deleted:', deletedSubscription.id);
+      console.log('📝 Deletion reason:', deletedSubscription.cancellation_reason);
       
       // Update user's subscription status to expired
       // This is the main event for subscription expiration
@@ -335,25 +382,26 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
       
     case 'invoice.payment_failed':
       const failedInvoice = event.data.object;
-      console.log('Payment failed for invoice:', failedInvoice.id);
-      console.log('Customer:', failedInvoice.customer);
-      console.log('Amount due:', failedInvoice.amount_due);
+      console.log('💸 Payment failed for invoice:', failedInvoice.id);
+      console.log('👤 Customer:', failedInvoice.customer);
+      console.log('💰 Amount due:', failedInvoice.amount_due);
       
       // Handle failed payment - subscription will be marked as past_due
       break;
       
     case 'invoice.payment_succeeded':
       const successfulInvoice = event.data.object;
-      console.log('Payment succeeded for invoice:', successfulInvoice.id);
-      console.log('Customer:', successfulInvoice.customer);
+      console.log('✅ Payment succeeded for invoice:', successfulInvoice.id);
+      console.log('👤 Customer:', successfulInvoice.customer);
       
       // Handle successful payment - subscription will be marked as active
       break;
       
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      console.log(`❓ Unhandled event type ${event.type}`);
   }
 
+  console.log('✅ Webhook processed successfully');
   res.json({ received: true });
 });
 
@@ -405,6 +453,13 @@ app.post('/create-subscription', async (req, res) => {
     return res.status(400).json({ error: 'Payment method ID is required.' });
   }
 
+  // Validate payment method ID format
+  if (!paymentMethodId.startsWith('pm_')) {
+    return res.status(400).json({ 
+      error: 'Invalid payment method ID format. Expected format: pm_xxx...' 
+    });
+  }
+
   if (!email) {
     return res.status(400).json({ error: 'Email is required.' });
   }
@@ -414,6 +469,15 @@ app.post('/create-subscription', async (req, res) => {
   const hasValidCoupon = trimmedCouponCode.length > 0;
 
   try {
+    console.log('🔧 Creating subscription with:', {
+      plan,
+      email,
+      userId,
+      paymentMethodId,
+      hasValidCoupon,
+      couponCode: trimmedCouponCode
+    });
+
     // Create a new customer with email and metadata
     const customer = await stripe.customers.create({
       email: email,
@@ -423,10 +487,14 @@ app.post('/create-subscription', async (req, res) => {
       }
     });
     
+    console.log('👤 Created customer:', customer.id);
+    
     // Attach the payment method to the customer
+    console.log('🔗 Attaching payment method:', paymentMethodId);
     await stripe.paymentMethods.attach(paymentMethodId, {
       customer: customer.id,
     });
+    console.log('✅ Payment method attached successfully');
 
     // Set as default payment method
     await stripe.customers.update(customer.id, {
