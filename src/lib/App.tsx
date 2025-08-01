@@ -37,7 +37,11 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
         <Route path="/rag-test" element={<RAGTest />} />
         <Route path="/simple-rag-test" element={<SimpleRAGTest />} />
         <Route path="/bible" element={<BiblePage />} />
-        <Route path="/forum" element={<div style={{padding:40, color:'#333', fontSize:24}}>Forum Coming Soon...</div>} />
+        <Route path="/forum" element={
+          <div className="flex items-center justify-center min-h-screen bg-gray-900">
+            <div className="text-white text-2xl font-semibold">Forum Coming Soon...</div>
+          </div>
+        } />
         <Route path="/login" element={<AuthPage initialMode="signin" onBack={() => navigate('/')} />} />
         <Route path="/test-backend" element={<BackendTest />} />
       </Routes>
