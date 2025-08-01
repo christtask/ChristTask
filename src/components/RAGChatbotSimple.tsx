@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatMessage {
   id: string;
@@ -30,8 +31,10 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true); // true = dark theme, false = light theme
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const { toast } = useToast();
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = useCallback(() => {
@@ -174,6 +177,56 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Enhanced copy function with better error handling and feedback
+  const handleCopyMessage = async (messageId: string, content: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      
+      // Show success toast
+      toast({
+        title: "Copied!",
+        description: "Message copied to clipboard",
+        duration: 2000,
+      });
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => {
+        setCopiedMessageId(null);
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to copy message:', error);
+      
+      // Fallback for older browsers
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = content;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        setCopiedMessageId(messageId);
+        toast({
+          title: "Copied!",
+          description: "Message copied to clipboard",
+          duration: 2000,
+        });
+        
+        setTimeout(() => {
+          setCopiedMessageId(null);
+        }, 2000);
+      } catch (fallbackError) {
+        console.error('Fallback copy also failed:', fallbackError);
+        toast({
+          title: "Copy failed",
+          description: "Unable to copy message to clipboard",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   return (
     <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Header */}
@@ -298,15 +351,29 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                         {/* Copy Button - Only for chatbot messages */}
                         {message.role === 'assistant' && (
                           <button
-                            onClick={() => navigator.clipboard.writeText(message.content)}
-                            className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 ${
+                            onClick={() => handleCopyMessage(message.id, message.content)}
+                            className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 flex items-center gap-1 ${
                               isDarkTheme 
                                 ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
                                 : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
-                            }`}
-                            title="Copy message"
+                            } ${copiedMessageId === message.id ? 'bg-green-600 text-white' : ''}`}
+                            title={copiedMessageId === message.id ? "Copied!" : "Copy message"}
                           >
-                            Copy
+                            {copiedMessageId === message.id ? (
+                              <>
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Copied
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                              </>
+                            )}
                           </button>
                         )}
                       </div>
