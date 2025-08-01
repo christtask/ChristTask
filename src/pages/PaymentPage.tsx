@@ -472,6 +472,16 @@ const PaymentPage = () => {
         type: 'card', card: cardElement as any,
       });
       if (paymentMethodError) throw new Error(paymentMethodError.message || 'Failed to create payment method');
+      console.log('Making backend request to:', 'https://christtask-backend.onrender.com/create-subscription');
+      console.log('Request payload:', {
+        email: formData.email.trim(),
+        userId: signupData?.user?.id || null,
+        couponCode: formData.couponCode.trim(),
+        plan: selectedPlan,
+        paymentMethodId: paymentMethod.id,
+        country: selectedCountry,
+      });
+      
       const res = await fetch('https://christtask-backend.onrender.com/create-subscription', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -484,13 +494,22 @@ const PaymentPage = () => {
         }),
       });
       
+      console.log('Backend response status:', res.status, res.statusText);
+      
       if (!res.ok) {
+        console.error('Backend error response:', {
+          status: res.status,
+          statusText: res.statusText,
+          url: res.url
+        });
+        
         if (res.status === 404) {
-          throw new Error('Payment service is temporarily unavailable. Please try again later.');
+          throw new Error('Payment service endpoint not found. Please contact support.');
         } else if (res.status === 500) {
           throw new Error('Server error. Please try again later.');
         } else {
           const responseData = await res.json().catch(() => ({}));
+          console.error('Backend error details:', responseData);
           throw new Error(responseData.error || `Payment failed (${res.status}). Please try again.`);
         }
       }
