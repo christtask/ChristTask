@@ -48,7 +48,7 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, hasPaidAccess } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
 
@@ -101,7 +101,19 @@ function AppShell() {
     );
   }
 
-  // Show responsive navigation for all users (authenticated and unauthenticated)
+  // Check if user has access (logged in or paid)
+  const hasAccess = user || hasPaidAccess();
+
+  // If user is not authenticated and doesn't have paid access, show only the routes without navigation
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen">
+        <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+    );
+  }
+
+  // Show responsive navigation only for authenticated users or users with paid access
   return (
     <div className="flex min-h-screen h-screen">
       {/* Desktop Sidebar Navigation */}
