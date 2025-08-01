@@ -96,16 +96,7 @@ function AppShell() {
     );
   }
 
-  // If user is not authenticated, show only the routes without sidebar
-  if (!user) {
-    return (
-      <div className="min-h-screen">
-        <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
-      </div>
-    );
-  }
-
-  // If user is authenticated, show responsive navigation
+  // Show responsive navigation for all users (authenticated and unauthenticated)
   return (
     <div className="flex min-h-screen h-screen">
       {/* Desktop Sidebar Navigation */}

@@ -85,21 +85,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
         return { data: null, error };
       }
 
-      // Check if email confirmation is required
-      if (data?.user && !data?.session) {
-        // Email confirmation required, but we'll allow the user to proceed
-        // since they're going through the payment flow
-        console.log('Email confirmation required, but allowing user to proceed with payment');
-        return { 
-          data: { 
-            user: data.user, 
-            requiresEmailConfirmation: true,
-            session: null // No session yet, but user can still proceed
-          }, 
-          error: null 
-        };
-      }
-
+      // Return the signup data - the user can proceed with payment
+      // Email confirmation will be handled later if needed
       return { data, error: null };
     } catch (err) {
       console.error('Signup exception:', err);

@@ -510,7 +510,7 @@ const PaymentPage = () => {
           // Show success message
           toast({
             title: "Payment Successful!",
-            description: "Your account has been created and subscription activated. You can access the chatbot immediately! Please check your email to confirm your account for future logins.",
+            description: "Your account has been created and subscription activated. You can access the chatbot immediately! Email confirmation is optional for future logins.",
           });
           
           // Show loading screen and redirect
@@ -575,7 +575,7 @@ const PaymentPage = () => {
       // Show success message
       toast({
         title: "Payment Successful!",
-        description: "Your account has been created and subscription activated. You can access the chatbot immediately! Please check your email to confirm your account for future logins.",
+        description: "Your account has been created and subscription activated. You can access the chatbot immediately! Email confirmation is optional for future logins.",
       });
       
       // Show loading screen and redirect
