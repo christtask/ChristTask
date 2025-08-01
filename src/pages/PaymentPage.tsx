@@ -10,7 +10,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 // Removed geolocation import - using static pricing
 import { LoadingScreen } from '@/components/LoadingScreen';
-import { ApplePayButton } from '@/components/ApplePayButton';
 import countriesRaw from '../data/countries.js';
 import {
   Command,
@@ -961,82 +960,7 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              {/* Apple Pay Button */}
-              <ApplePayButton
-                onPaymentSuccess={async (paymentMethod) => {
-                  setLoading(true);
-                  setError('');
-                  
-                  try {
-                    // Handle Apple Pay success similar to regular payment
-                    const countryInfo = getCountryInfo(selectedCountry);
-                    const convertedPrice = getConvertedPrice(selectedPlan === 'weekly' ? 4.50 : 11.99);
-                    
-                    // Make backend request with Apple Pay payment method
-                    const res = await fetch('https://christtask-backend.onrender.com/create-subscription', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        email: formData.email.trim(),
-                        userId: null, // Will be set after signup
-                        couponCode: formData.couponCode.trim(),
-                        plan: selectedPlan,
-                        paymentMethodId: paymentMethod.id,
-                        country: selectedCountry,
-                      }),
-                    });
-                    
-                    if (res.ok) {
-                      const responseData = await res.json();
-                      console.log('Apple Pay payment successful:', responseData);
-                      
-                      // Sign up user and redirect
-                      const { data: signupData, error: signupError } = await signUp(formData.email, formData.password);
-                      if (signupError) {
-                        setError(signupError.message);
-                        setLoading(false);
-                        return;
-                      }
-                      
-                      // Auto sign in
-                      const { error: signInError } = await signIn(formData.email, formData.password);
-                      if (signInError) {
-                        console.warn('Auto sign-in failed:', signInError);
-                      }
-                      
-                      setShowLoading(true);
-                      setTimeout(() => { navigate('/chatbot'); }, 2000);
-                    } else {
-                      const errorData = await res.json();
-                      setError(errorData.error || 'Apple Pay payment failed');
-                    }
-                  } catch (error: any) {
-                    console.error('Apple Pay error:', error);
-                    setError(error.message || 'Apple Pay payment failed');
-                  } finally {
-                    setLoading(false);
-                  }
-                }}
-                onPaymentError={(error) => {
-                  setError(error);
-                  setLoading(false);
-                }}
-                amount={parseFloat(getConvertedPrice(selectedPlan === 'weekly' ? 4.50 : 11.99))}
-                currency={getCountryInfo(selectedCountry).currencyCode || 'GBP'}
-                plan={selectedPlan}
-                email={formData.email}
-                disabled={loading || !formData.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email) || !formData.password || formData.password.length < 6}
-              />
 
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-slate-200" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-500">Or pay with card</span>
-                </div>
-              </div>
 
               {/* Submit Button */}
               <Button
@@ -1064,7 +988,7 @@ const PaymentPage = () => {
                 🔒 Secure payment powered by Stripe
               </p>
               <p className="text-xs text-slate-400">
-                Apple Pay • Pay with card • Coupon codes accepted
+                Pay with card • Coupon codes accepted
               </p>
             </div>
           </div>
