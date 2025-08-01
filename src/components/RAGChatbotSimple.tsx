@@ -187,39 +187,75 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
     }
 
     const utterance = new SpeechSynthesisUtterance(content);
-    utterance.rate = 0.9; // Slightly slower for better comprehension
-    utterance.pitch = 1;
+    
+    // Enhanced settings for more human-like speech
+    utterance.rate = 0.85; // Slightly slower for more natural pace
+    utterance.pitch = 1.1; // Slightly higher pitch for more warmth
     utterance.volume = 1;
     
-    // Try to use a good voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice => 
-      voice.lang.includes('en') && voice.name.includes('Google')
-    ) || voices.find(voice => voice.lang.includes('en')) || voices[0];
-    
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-
-    utterance.onstart = () => {
-      setSpeakingMessageId(messageId);
-    };
-
-    utterance.onend = () => {
-      setSpeakingMessageId(null);
-    };
-
-    utterance.onerror = (event) => {
-      console.error('Speech synthesis error:', event);
-      setSpeakingMessageId(null);
-      toast({
-        title: "Audio Error",
-        description: "Unable to play audio. Please try again.",
-        variant: "destructive",
+    // Wait for voices to load if needed
+    const getVoices = () => {
+      return new Promise<SpeechSynthesisVoice[]>((resolve) => {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          resolve(voices);
+        } else {
+          window.speechSynthesis.onvoiceschanged = () => {
+            resolve(window.speechSynthesis.getVoices());
+          };
+        }
       });
     };
 
-    window.speechSynthesis.speak(utterance);
+    // Enhanced voice selection for more human-like speech
+    getVoices().then(voices => {
+      // Priority order for more natural voices
+      const voicePriority = [
+        // Google voices (usually more natural)
+        voice => voice.name.includes('Google') && voice.lang.includes('en'),
+        // Microsoft voices (often good quality)
+        voice => voice.name.includes('Microsoft') && voice.lang.includes('en'),
+        // Apple voices (good on Mac)
+        voice => voice.name.includes('Samantha') || voice.name.includes('Alex'),
+        // Any English voice with 'natural' in the name
+        voice => voice.name.toLowerCase().includes('natural') && voice.lang.includes('en'),
+        // Any English voice
+        voice => voice.lang.includes('en'),
+        // Fallback to any voice
+        voice => true
+      ];
+
+      let selectedVoice = null;
+      for (const priority of voicePriority) {
+        selectedVoice = voices.find(priority);
+        if (selectedVoice) break;
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log('Selected voice:', selectedVoice.name);
+      }
+
+      utterance.onstart = () => {
+        setSpeakingMessageId(messageId);
+      };
+
+      utterance.onend = () => {
+        setSpeakingMessageId(null);
+      };
+
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
+        setSpeakingMessageId(null);
+        toast({
+          title: "Audio Error",
+          description: "Unable to play audio. Please try again.",
+          variant: "destructive",
+        });
+      };
+
+      window.speechSynthesis.speak(utterance);
+    });
   };
 
   const stopSpeaking = () => {
