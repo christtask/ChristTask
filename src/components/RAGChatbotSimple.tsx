@@ -38,9 +38,10 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+  // Removed auto-scroll to let users read answers from start to finish
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages, scrollToBottom]);
 
   // Apply theme to document body
   useEffect(() => {
