@@ -45,19 +45,10 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
 function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showInitialLoading, setShowInitialLoading] = useState(true);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
-
-  // Hide initial loading screen after a short delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowInitialLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -93,17 +84,6 @@ function AppShell() {
         break;
     }
   };
-
-  // Show initial loading screen
-  if (showInitialLoading) {
-    return (
-      <LoadingScreen 
-        message="Welcome to ChristTask..." 
-        duration={2000}
-        onComplete={() => setShowInitialLoading(false)}
-      />
-    );
-  }
 
   // Show loading state while checking authentication
   if (loading) {
