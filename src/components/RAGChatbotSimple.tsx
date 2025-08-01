@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+
 interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -32,6 +33,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   const [isTyping, setIsTyping] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true); // true = dark theme, false = light theme
   const [copiedMessageId, setCopiedMessageId] = useState(null);
+  const [speakingMessageId, setSpeakingMessageId] = useState(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const { toast } = useToast();
@@ -175,6 +177,56 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Audio speech synthesis functions
+  const speakMessage = (messageId: string, content: string) => {
+    // Stop any currently speaking
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(content);
+    utterance.rate = 0.9; // Slightly slower for better comprehension
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    // Try to use a good voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(voice => 
+      voice.lang.includes('en') && voice.name.includes('Google')
+    ) || voices.find(voice => voice.lang.includes('en')) || voices[0];
+    
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+    }
+
+    utterance.onstart = () => {
+      setSpeakingMessageId(messageId);
+    };
+
+    utterance.onend = () => {
+      setSpeakingMessageId(null);
+    };
+
+    utterance.onerror = (event) => {
+      console.error('Speech synthesis error:', event);
+      setSpeakingMessageId(null);
+      toast({
+        title: "Audio Error",
+        description: "Unable to play audio. Please try again.",
+        variant: "destructive",
+      });
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      setSpeakingMessageId(null);
+    }
   };
 
   // Enhanced copy function with better error handling and feedback
@@ -348,33 +400,66 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
                           {formatTime(message.timestamp)}
                         </div>
                         
-                        {/* Copy Button - Only for chatbot messages */}
+                        {/* Action Buttons - Only for chatbot messages */}
                         {message.role === 'assistant' && (
-                          <button
-                            onClick={() => handleCopyMessage(message.id, message.content)}
-                            className={`absolute bottom-2 right-2 p-1.5 rounded-md text-xs transition-all duration-200 flex items-center gap-1 ${
-                              isDarkTheme 
-                                ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
-                                : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
-                            } ${copiedMessageId === message.id ? 'bg-green-600 text-white' : ''}`}
-                            title={copiedMessageId === message.id ? "Copied!" : "Copy message"}
-                          >
-                            {copiedMessageId === message.id ? (
-                              <>
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Copied
-                              </>
-                            ) : (
-                              <>
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                Copy
-                              </>
-                            )}
-                          </button>
+                          <div className="absolute bottom-2 right-2 flex gap-1">
+                            {/* Audio Button */}
+                            <button
+                              onClick={() => speakingMessageId === message.id 
+                                ? stopSpeaking() 
+                                : speakMessage(message.id, message.content)
+                              }
+                              className={`p-1.5 rounded-md text-xs transition-all duration-200 flex items-center gap-1 ${
+                                isDarkTheme 
+                                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
+                                  : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
+                              } ${speakingMessageId === message.id ? 'bg-blue-600 text-white' : ''}`}
+                              title={speakingMessageId === message.id ? "Stop audio" : "Play audio"}
+                            >
+                              {speakingMessageId === message.id ? (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                  Stop
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                  </svg>
+                                  Audio
+                                </>
+                              )}
+                            </button>
+                            
+                            {/* Copy Button */}
+                            <button
+                              onClick={() => handleCopyMessage(message.id, message.content)}
+                              className={`p-1.5 rounded-md text-xs transition-all duration-200 flex items-center gap-1 ${
+                                isDarkTheme 
+                                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white' 
+                                  : 'bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800'
+                              } ${copiedMessageId === message.id ? 'bg-green-600 text-white' : ''}`}
+                              title={copiedMessageId === message.id ? "Copied!" : "Copy message"}
+                            >
+                              {copiedMessageId === message.id ? (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Copied
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  </svg>
+                                  Copy
+                                </>
+                              )}
+                            </button>
+                          </div>
                         )}
                       </div>
                     )}
