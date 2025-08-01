@@ -177,14 +177,14 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   return (
     <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className} flex flex-col justify-end`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Header */}
-      <div className={`p-2 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
+      <div className={`py-1 px-2 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'}`}>
-              <span className={`text-sm font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>CA</span>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'}`}>
+              <span className={`text-xs font-bold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>CA</span>
             </div>
             <div>
-              <h2 className={`text-base font-semibold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</h2>
+              <h2 className={`text-sm font-semibold ${isDarkTheme ? 'text-white' : 'text-gray-800'}`}>ChristTask</h2>
               <p className={`text-xs ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Debate ready?</p>
             </div>
           </div>
