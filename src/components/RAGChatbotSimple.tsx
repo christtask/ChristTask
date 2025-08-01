@@ -230,7 +230,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
   return (
     <div className={`min-h-screen ${isDarkTheme ? 'bg-black text-white' : 'bg-white text-black'} ${className}`} style={{ backgroundColor: isDarkTheme ? '#000000' : '#ffffff' }}>
       {/* Header */}
-      <div className={`py-0.5 px-2 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
+      <div className={`py-3 px-4 border-b ${isDarkTheme ? 'border-gray-800 bg-black' : 'border-gray-200 bg-white'}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className={`w-5 h-5 rounded-full flex items-center justify-center ${isDarkTheme ? 'bg-gray-800' : 'bg-gray-200'}`}>
