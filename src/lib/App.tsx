@@ -19,6 +19,7 @@ import { AuthPage } from "../components/AuthPage";
 import { useAuth } from '../hooks/useAuth';
 import { useIsMobile } from '../hooks/use-mobile';
 import { LoadingScreen } from '../components/LoadingScreen';
+import { BackendTest } from '../components/BackendTest';
 
 const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMfKSsjtBP5h47m7G2HvnpKEyXYJNZ9WyvCVcl1TJTSRNQMvaQju6d00YaYe3dhu");
 
@@ -38,6 +39,7 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
         <Route path="/bible" element={<BiblePage />} />
         <Route path="/forum" element={<div style={{padding:40, color:'#333', fontSize:24}}>Forum Coming Soon...</div>} />
         <Route path="/login" element={<AuthPage initialMode="signin" onBack={() => navigate('/')} />} />
+        <Route path="/test-backend" element={<BackendTest />} />
       </Routes>
   );
 }
