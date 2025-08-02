@@ -800,7 +800,7 @@ const PaymentPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Collection */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-800">Contact Information</h3>
+                <h3 className="text-lg font-semibold text-slate-800">Create Account</h3>
                 <div>
                   <Label htmlFor="email" className="text-sm font-medium text-slate-700">
                     Email address <span className="text-red-600">*</span>
