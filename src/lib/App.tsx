@@ -70,6 +70,7 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showBottomNav, setShowBottomNav] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false); // Add navigation loading state
   const navigate = useNavigate();
   const { user, loading, hasPaidAccess } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
@@ -103,10 +104,10 @@ function AppShell() {
       }
     }
 
-    if (!loading) {
+    if (!loading && !isNavigating) {
       checkAccess();
     }
-  }, [user, loading, hasPaidAccess]);
+  }, [user, loading, hasPaidAccess, isNavigating]);
 
   // Debug logging
   console.log('AppShell - isMobile:', isMobile);
@@ -130,6 +131,7 @@ function AppShell() {
   }, [user, loading, navigate, wasAuthenticated]);
 
   const handleTabChange = (tab) => {
+    setIsNavigating(true); // Set navigation loading state
     setActiveTab(tab);
     switch (tab) {
       case 'home':
@@ -147,10 +149,12 @@ function AppShell() {
       default:
         break;
     }
+    // Clear navigation loading state after a short delay
+    setTimeout(() => setIsNavigating(false), 500);
   };
 
-  // Show loading state while checking authentication
-  if (loading) {
+  // Show loading state while checking authentication or during navigation
+  if (loading || isNavigating) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">Loading...</div>

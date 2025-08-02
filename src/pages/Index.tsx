@@ -80,7 +80,7 @@ const Index = () => {
         setCurrentPage('auth');
       }
       
-      // Clean up URL
+      // Clean up URL immediately
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [handleGuestSuccess, user, toast]);
