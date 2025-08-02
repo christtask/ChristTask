@@ -79,6 +79,9 @@ export const LandingPage = ({
   const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
 
+  // Debug logging
+  console.log('LandingPage - menuOpen:', menuOpen, 'isMobile:', isMobile);
+
   const handleStartJourney = () => {
     navigate('/payment');
   };
@@ -141,7 +144,11 @@ export const LandingPage = ({
               </button>
               <button
                 className="text-white focus:outline-none"
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={() => {
+                  console.log('Hamburger clicked! Current menuOpen:', menuOpen);
+                  setMenuOpen(!menuOpen);
+                  console.log('MenuOpen set to:', !menuOpen);
+                }}
                 aria-label="Open menu"
               >
                 <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,15 +158,26 @@ export const LandingPage = ({
               
               {/* Mobile Dropdown Menu */}
               {menuOpen && (
-                <div className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded-lg shadow-lg flex flex-col w-48 py-2 z-[9999] animate-fade-in-up">
+                <div 
+                  className="absolute top-12 right-0 bg-gray-900 border border-gray-700 rounded-lg shadow-lg flex flex-col w-48 py-2 z-[9999]"
+                  style={{ display: menuOpen ? 'flex' : 'none' }}
+                >
                   <button 
-                    onClick={() => { setMenuOpen(false); navigate('/'); }} 
+                    onClick={() => { 
+                      console.log('Home clicked');
+                      setMenuOpen(false); 
+                      navigate('/'); 
+                    }} 
                     className="text-white px-4 py-2 text-left hover:bg-gray-800 transition-colors"
                   >
                     Home
                   </button>
                   <button 
-                    onClick={() => { setMenuOpen(false); navigate('/payment'); }} 
+                    onClick={() => { 
+                      console.log('Chat with AI clicked');
+                      setMenuOpen(false); 
+                      navigate('/payment'); 
+                    }} 
                     className="text-white px-4 py-2 text-left hover:bg-gray-800 transition-colors"
                   >
                     Chat with AI
