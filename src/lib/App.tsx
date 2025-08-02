@@ -113,7 +113,8 @@ function AppShell() {
     user: !!user,
     hasPaidAccess: hasPaidAccess(),
     finalHasAccess: hasAccess,
-    isMobile: isMobile
+    isMobile: isMobile,
+    shouldShowBottomNav: isMobile && hasAccess
   });
 
   // If user is not authenticated and doesn't have paid access, show only the routes without navigation
@@ -147,7 +148,10 @@ function AppShell() {
         
         {/* Mobile Bottom Navigation - Only show for authenticated users */}
         {isMobile && hasAccess && (
-          <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+          <>
+            {console.log('AppShell - Rendering BottomNavigation for mobile with access')}
+            <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+          </>
         )}
       </div>
     </div>

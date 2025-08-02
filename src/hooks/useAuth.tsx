@@ -180,7 +180,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
     console.log('hasPaidAccess check:', {
       paymentSuccess,
       paidUserEmail,
-      hasAccess
+      hasAccess,
+      paymentSuccessType: typeof paymentSuccess,
+      paidUserEmailType: typeof paidUserEmail
     });
     
     return hasAccess;
