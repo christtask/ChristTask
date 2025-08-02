@@ -2,6 +2,8 @@
 import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useTikTokDetection } from './useTikTokDetection';
+import { checkUserAccess, AccessCheckResult } from '@/services/accessCheck';
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +14,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   testConnection: () => Promise<boolean>;
   hasPaidAccess: () => boolean;
+  accessCheckResult: AccessCheckResult | null;
+  refreshAccessCheck: () => Promise<void>;
 }
 
 const AuthContext = createContext(undefined);
@@ -20,6 +24,23 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [accessCheckResult, setAccessCheckResult] = useState(null);
+  const { isTikTokBrowser, isInAppBrowser } = useTikTokDetection();
+
+  const performAccessCheck = async () => {
+    try {
+      const result = await checkUserAccess();
+      setAccessCheckResult(result);
+      console.log('Access check result:', result);
+    } catch (error) {
+      console.error('Access check failed:', error);
+      setAccessCheckResult({ hasAccess: false, reason: 'none' });
+    }
+  };
+
+  const refreshAccessCheck = async () => {
+    await performAccessCheck();
+  };
 
   useEffect(() => {
     // Set up auth state listener
@@ -28,6 +49,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Perform access check when auth state changes
+        performAccessCheck();
       }
     );
 
@@ -36,10 +60,20 @@ export const AuthProvider = ({ children }: { children: any }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Perform initial access check
+      performAccessCheck();
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Perform access check when TikTok detection changes
+  useEffect(() => {
+    if (isTikTokBrowser || isInAppBrowser) {
+      performAccessCheck();
+    }
+  }, [isTikTokBrowser, isInAppBrowser]);
 
   const testConnection = async () => {
     try {
@@ -171,6 +205,12 @@ export const AuthProvider = ({ children }: { children: any }) => {
   };
 
   const hasPaidAccess = () => {
+    // For TikTok and in-app browsers, use backend check
+    if (isTikTokBrowser || isInAppBrowser) {
+      return accessCheckResult?.hasAccess || false;
+    }
+    
+    // For regular browsers, use localStorage (existing behavior)
     const paymentSuccess = localStorage.getItem('paymentSuccess');
     const paidUserEmail = localStorage.getItem('paidUserEmail');
     
@@ -182,7 +222,10 @@ export const AuthProvider = ({ children }: { children: any }) => {
       paidUserEmail,
       hasAccess,
       paymentSuccessType: typeof paymentSuccess,
-      paidUserEmailType: typeof paidUserEmail
+      paidUserEmailType: typeof paidUserEmail,
+      isTikTokBrowser,
+      isInAppBrowser,
+      backendResult: accessCheckResult
     });
     
     return hasAccess;
@@ -195,9 +238,11 @@ export const AuthProvider = ({ children }: { children: any }) => {
       signUp,
       signIn,
       signOut,
-    testConnection,
-    hasPaidAccess
-  };
+      testConnection,
+      hasPaidAccess,
+      accessCheckResult,
+      refreshAccessCheck
+    };
 
   return (
     <AuthContext.Provider value={value}>

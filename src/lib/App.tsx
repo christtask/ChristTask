@@ -69,7 +69,7 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
-  const { user, loading, hasPaidAccess } = useAuth();
+  const { user, loading, hasPaidAccess, accessCheckResult, refreshAccessCheck } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
 
@@ -77,6 +77,7 @@ function AppShell() {
   console.log('AppShell - isMobile:', isMobile);
   console.log('AppShell - user:', user);
   console.log('AppShell - loading:', loading);
+  console.log('AppShell - accessCheckResult:', accessCheckResult);
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -131,7 +132,8 @@ function AppShell() {
     hasPaidAccess: hasPaidAccess(),
     finalHasAccess: hasAccess,
     isMobile: isMobile,
-    shouldShowBottomNav: isMobile && hasAccess
+    shouldShowBottomNav: isMobile && hasAccess,
+    accessCheckResult: accessCheckResult
   });
 
   // If user is not authenticated and doesn't have paid access, show only the routes without navigation
