@@ -5,11 +5,23 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  throw new Error('Missing Supabase environment variables. Please check your .env file.');
-}
+// Create a mock client if environment variables are missing
+const createMockClient = () => {
+  console.warn('Missing Supabase environment variables. Using mock client.');
+  return {
+    auth: {
+      signInWithPassword: async () => ({ data: null, error: { message: 'Authentication not configured' } }),
+      signUp: async () => ({ data: null, error: { message: 'Authentication not configured' } }),
+      signOut: async () => ({ error: null }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    }
+  };
+};
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabase = SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY 
+  ? createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+  : createMockClient();
