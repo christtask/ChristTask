@@ -21,6 +21,8 @@ import { useIsMobile } from '../hooks/use-mobile';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { BackendTest } from '../components/BackendTest';
 import { isTikTokBrowser } from '../utils/browserDetection';
+import NotFound from '../pages/NotFound';
+import { logger } from '../utils/logger';
 
 const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMfKSsjtBP5h47m7G2HvnpKEyXYJNZ9WyvCVcl1TJTSRNQMvaQju6d00YaYe3dhu");
 
@@ -49,9 +51,6 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
         <Route path="/success" element={<WelcomeToChatbot onStartChat={() => navigate('/chatbot')} />} />
         <Route path="/chatbot" element={<ProtectedRoute><ChatbotPage /></ProtectedRoute>} />
         <Route path="/chatbot-simple" element={<ProtectedRoute><ChatbotPage /></ProtectedRoute>} />
-        <Route path="/chatbot-test" element={<ProtectedRoute><AIChatbotTest /></ProtectedRoute>} />
-        <Route path="/rag-test" element={<ProtectedRoute><RAGTest /></ProtectedRoute>} />
-        <Route path="/simple-rag-test" element={<ProtectedRoute><SimpleRAGTest /></ProtectedRoute>} />
         <Route path="/bible" element={<ProtectedRoute><BiblePage /></ProtectedRoute>} />
         <Route path="/forum" element={
           <ProtectedRoute>
@@ -61,7 +60,11 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
           </ProtectedRoute>
         } />
         <Route path="/login" element={<AuthPage initialMode="signin" onBack={() => navigate('/')} />} />
-        <Route path="/test-backend" element={<BackendTest />} />
+        <Route path="/privacy-policy" element={<div className="min-h-screen p-8"><h1 className="text-2xl font-bold mb-4">Privacy Policy</h1><p>Coming soon...</p></div>} />
+        <Route path="/terms-of-service" element={<div className="min-h-screen p-8"><h1 className="text-2xl font-bold mb-4">Terms of Service</h1><p>Coming soon...</p></div>} />
+        <Route path="/refund-policy" element={<div className="min-h-screen p-8"><h1 className="text-2xl font-bold mb-4">Refund Policy</h1><p>Coming soon...</p></div>} />
+        <Route path="/contact" element={<div className="min-h-screen p-8"><h1 className="text-2xl font-bold mb-4">Contact Us</h1><p>Coming soon...</p></div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
   );
 }
@@ -91,16 +94,13 @@ function AppShell() {
           });
           const data = await res.json();
           setShowBottomNav(data.hasAccess);
-          console.log('TikTok access check result:', data);
         } catch (error) {
-          console.error('TikTok access check failed:', error);
           setShowBottomNav(false);
         }
       } else {
         // Your existing logic (local/session access)
         const hasAccess = user || hasPaidAccess();
         setShowBottomNav(hasAccess);
-        console.log('Regular browser access check:', { user: !!user, hasPaidAccess: hasPaidAccess() });
       }
     }
 
@@ -108,12 +108,6 @@ function AppShell() {
       checkAccess();
     }
   }, [user, loading, hasPaidAccess, isNavigating]);
-
-  // Debug logging
-  console.log('AppShell - isMobile:', isMobile);
-  console.log('AppShell - user:', user);
-  console.log('AppShell - loading:', loading);
-  console.log('AppShell - showBottomNav:', showBottomNav);
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -164,7 +158,6 @@ function AppShell() {
 
   // If user doesn't have access, show only the routes without navigation
   if (!showBottomNav) {
-    console.log('AppShell - No access, showing routes without navigation');
     return (
       <div className="min-h-screen">
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -173,7 +166,6 @@ function AppShell() {
   }
 
   // Show responsive navigation only for users with access
-  console.log('AppShell - Has access, showing navigation');
   return (
     <div className="flex min-h-screen h-screen">
       {/* Desktop Sidebar Navigation */}
@@ -194,7 +186,6 @@ function AppShell() {
         {/* Mobile Bottom Navigation - Only show for users with access */}
         {isMobile && showBottomNav && (
           <>
-            {console.log('AppShell - Rendering BottomNavigation for mobile with access')}
             <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
           </>
         )}

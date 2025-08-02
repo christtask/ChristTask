@@ -1,8 +1,8 @@
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { User } from '@supabase/supabase-js';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/utils/logger';
 
 interface GuestAuthContextType {
   isGuest: boolean;
@@ -45,7 +45,7 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
 
   const handleGuestSuccess = async (sessionId: string) => {
     try {
-      console.log('Processing guest success for session:', sessionId);
+      logger.log('Processing guest success for session:', sessionId);
       
       const { data, error } = await supabase.functions.invoke('handle-guest-success', {
         body: { sessionId }
@@ -70,7 +70,7 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
       setIsGuest(true);
       setShowAccountPrompt(true);
 
-      console.log('Guest account setup successful');
+      logger.log('Guest account setup successful');
 
     } catch (error) {
       console.error('Error handling guest success:', error);

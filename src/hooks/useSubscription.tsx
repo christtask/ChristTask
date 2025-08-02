@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
+import { logger } from '@/utils/logger';
 
 interface Subscription {
   id: string;
@@ -21,7 +22,7 @@ interface SubscriptionStatus {
 
 export const useSubscription = () => {
   const { user } = useAuth();
-  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>({
+  const [subscriptionStatus, setSubscriptionStatus] = useState({
     hasSubscription: false,
     subscription: null,
     loading: false,
@@ -29,11 +30,11 @@ export const useSubscription = () => {
     isExpired: false,
     daysUntilExpiry: null,
     canUseUnlimitedFeatures: false
-  });
+  } as SubscriptionStatus);
 
   const checkSubscription = async () => {
     if (!user?.email) {
-      console.log('No user email available for subscription check');
+      logger.log('No user email available for subscription check');
       setSubscriptionStatus(prev => ({ 
         ...prev, 
         loading: false,
@@ -44,11 +45,11 @@ export const useSubscription = () => {
       return;
     }
 
-    console.log('Checking subscription for email:', user.email);
+    logger.log('Checking subscription for email:', user.email);
     setSubscriptionStatus(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      console.log('Making request to check-subscription endpoint...');
+      logger.log('Making request to check-subscription endpoint...');
       const response = await fetch('https://christtask-backend.onrender.com/check-subscription', {
         method: 'POST',
         headers: {
@@ -59,11 +60,11 @@ export const useSubscription = () => {
         }),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
+      logger.log('Response status:', response.status);
+      logger.log('Response ok:', response.ok);
 
       const data = await response.json();
-      console.log('Response data:', data);
+      logger.log('Response data:', data);
 
       if (response.ok) {
         const now = Math.floor(Date.now() / 1000);
@@ -72,7 +73,7 @@ export const useSubscription = () => {
           ? Math.ceil((data.subscription.currentPeriodEnd - now) / (24 * 60 * 60))
           : null;
 
-        console.log('Subscription check successful:', {
+        logger.log('Subscription check successful:', {
           hasSubscription: data.hasSubscription,
           isExpired,
           daysUntilExpiry
@@ -88,7 +89,7 @@ export const useSubscription = () => {
           canUseUnlimitedFeatures: data.hasSubscription && !isExpired
         });
       } else {
-        console.error('Subscription check failed with status:', response.status, 'Error:', data.error);
+        logger.error('Subscription check failed with status:', response.status, 'Error:', data.error);
         setSubscriptionStatus({
           hasSubscription: false,
           subscription: null,
@@ -100,11 +101,11 @@ export const useSubscription = () => {
         });
       }
     } catch (error) {
-      console.error('Network error while checking subscription:', error);
+      logger.error('Network error while checking subscription:', error);
       
       // Fallback: Assume user has access if backend is unavailable
       // This prevents blocking users when there are network issues
-      console.log('Backend unavailable, allowing access as fallback');
+      logger.log('Backend unavailable, allowing access as fallback');
       setSubscriptionStatus({
         hasSubscription: true, // Assume they have access
         subscription: null,

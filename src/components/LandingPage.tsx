@@ -29,6 +29,7 @@ import {
   Mic,
   LogOut
 } from "lucide-react";
+import { logger } from '@/utils/logger';
 
 // Custom hook for scroll-triggered animations
 const useScrollAnimation = () => {
@@ -80,7 +81,7 @@ export const LandingPage = ({
   const isMobile = useIsMobile();
 
   // Debug logging
-  console.log('LandingPage - menuOpen:', menuOpen, 'isMobile:', isMobile);
+  logger.log('LandingPage - menuOpen:', menuOpen, 'isMobile:', isMobile);
 
   const handleStartJourney = () => {
     navigate('/payment');
@@ -145,9 +146,9 @@ export const LandingPage = ({
               <button
                 className="text-white focus:outline-none"
                 onClick={() => {
-                  console.log('Hamburger clicked! Current menuOpen:', menuOpen);
+                  logger.log('Hamburger clicked! Current menuOpen:', menuOpen);
                   setMenuOpen(!menuOpen);
-                  console.log('MenuOpen set to:', !menuOpen);
+                  logger.log('MenuOpen set to:', !menuOpen);
                 }}
                 aria-label="Open menu"
               >
@@ -164,7 +165,7 @@ export const LandingPage = ({
                 >
                   <button 
                     onClick={() => { 
-                      console.log('Home clicked');
+                      logger.log('Home clicked');
                       setMenuOpen(false); 
                       navigate('/'); 
                     }} 
@@ -174,7 +175,7 @@ export const LandingPage = ({
                   </button>
                   <button 
                     onClick={() => { 
-                      console.log('Chat with AI clicked');
+                      logger.log('Chat with AI clicked');
                       setMenuOpen(false); 
                       navigate('/payment'); 
                     }} 

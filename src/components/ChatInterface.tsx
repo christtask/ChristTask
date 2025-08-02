@@ -1,16 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Send, Bot, User, Download, ThumbsUp, ThumbsDown, Share2, Mic, MicOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useMessageUsage } from "@/hooks/useMessageUsage";
-import { supabase } from "@/integrations/supabase/client";
-// import { useToast } from "@/hooks/use-toast"; // Remove if this file does not exist
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-// import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useMessageUsage } from '@/hooks/useMessageUsage';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Send, Copy, Check, Loader2, RefreshCw } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/utils/logger';
 
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +40,7 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
   const textareaRef = useRef(null);
   const { user } = useAuth();
   const { remainingMessages, loading: usageLoading, refreshUsage } = useMessageUsage();
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   // Fallback minimal chat UI state
@@ -149,20 +148,20 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
   }, [selectedTopic]);
 
   const handleSendMessage = async () => {
-    console.log('handleSendMessage called with inputMessage:', inputMessage);
-    console.log('Current state - isLoading:', isLoading, 'user:', !!user, 'remainingMessages:', remainingMessages);
+    logger.info('handleSendMessage called with inputMessage:', inputMessage);
+    logger.info('Current state - isLoading:', isLoading, 'user:', !!user, 'remainingMessages:', remainingMessages);
     
     if (!inputMessage.trim() || isLoading || !user) {
-      console.log('Early return - inputMessage:', inputMessage.trim(), 'isLoading:', isLoading, 'user:', !!user);
+      logger.info('Early return - inputMessage:', inputMessage.trim(), 'isLoading:', isLoading, 'user:', !!user);
       return;
     }
     
     if (remainingMessages <= 0) {
-      // toast({
-      //   title: "Daily Limit Reached",
-      //   description: "You've used all 15 messages for today. Try again tomorrow!",
-      //   variant: "destructive",
-      // });
+      toast({
+        title: "Daily Limit Reached",
+        description: "You've used all 15 messages for today. Try again tomorrow!",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -174,14 +173,14 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
       topic: selectedTopic || undefined
     };
 
-    console.log('Sending user message:', inputMessage);
+    logger.info('Sending user message:', inputMessage);
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
     setIsLoading(true);
     setIsTyping(true);
 
     try {
-      console.log('Calling Supabase function with:', {
+      logger.info('Calling Supabase function with:', {
         message: inputMessage,
         topic: selectedTopic,
         conversationId: conversationId
@@ -195,23 +194,23 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
         },
       });
 
-      console.log('Supabase function response:', { data, error });
+      logger.info('Supabase function response:', { data, error });
 
       if (error) {
-        console.error('Supabase function error:', error);
+        logger.error('Supabase function error:', error);
         if (error.message && error.message.includes('Daily message limit reached')) {
-          // toast({
-          //   title: "Daily Limit Reached",
-          //   description: "You've reached your daily message limit.",
-          //   variant: "destructive",
-          // });
+          toast({
+            title: "Daily Limit Reached",
+            description: "You've reached your daily message limit.",
+            variant: "destructive",
+          });
           return;
         }
         throw error;
       }
 
-      console.log('Bot response data:', data);
-      console.log('Bot response content:', data?.response);
+      logger.info('Bot response data:', data);
+      logger.info('Bot response content:', data?.response);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -221,24 +220,24 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
         topic: selectedTopic || undefined
       };
 
-      console.log('Adding bot message:', botMessage);
+      logger.info('Adding bot message:', botMessage);
       setMessages(prev => [...prev, botMessage]);
       
       // Refresh usage count
       refreshUsage();
 
-      // toast({
-      //   title: "Message sent",
-      //   description: `${data.remaining} messages remaining today`,
-      // });
+      toast({
+        title: "Message sent",
+        description: `${data.remaining} messages remaining today`,
+      });
 
     } catch (error) {
-      console.error('Error sending message:', error);
-      // toast({
-      //   title: "Error",
-      //   description: "Failed to send message. Please try again.",
-      //   variant: "destructive",
-      // });
+      logger.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
       setIsTyping(false);
@@ -257,10 +256,10 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
       msg.id === messageId ? { ...msg, feedback } : msg
     ));
     
-    // toast({
-    //   title: "Feedback recorded",
-    //   description: "Thank you for your feedback!",
-    // });
+    toast({
+      title: "Feedback recorded",
+      description: "Thank you for your feedback!",
+    });
   };
 
   const exportConversation = () => {
@@ -278,10 +277,10 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    // toast({
-    //   title: "Conversation exported",
-    //   description: "Your conversation has been downloaded.",
-    // });
+    toast({
+      title: "Conversation exported",
+      description: "Your conversation has been downloaded.",
+    });
   };
 
   const shareConversation = async () => {
@@ -301,10 +300,10 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
     } else {
       // Fallback to clipboard
       await navigator.clipboard.writeText(conversationText);
-      // toast({
-      //   title: "Conversation copied",
-      //   description: "Conversation copied to clipboard!",
-      // });
+      toast({
+        title: "Conversation copied",
+        description: "Conversation copied to clipboard!",
+      });
     }
   };
 
@@ -319,10 +318,10 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
       
       recognition.onstart = () => {
         setIsListening(true);
-        // toast({
-        //   title: "Listening...",
-        //   description: "Speak your message now.",
-        // });
+        toast({
+          title: "Listening...",
+          description: "Speak your message now.",
+        });
       };
       
       recognition.onresult = (event) => {
@@ -336,20 +335,20 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
       
       recognition.onerror = (event) => {
         setIsListening(false);
-        // toast({
-        //   title: "Voice input error",
-        //   description: "Please try again or type your message.",
-        //   variant: "destructive",
-        // });
+        toast({
+          title: "Voice input error",
+          description: "Please try again or type your message.",
+          variant: "destructive",
+        });
       };
       
       recognition.start();
     } else {
-      // toast({
-      //   title: "Voice input not supported",
-      //   description: "Your browser doesn't support voice input.",
-      //   variant: "destructive",
-      // });
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -405,12 +404,12 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
           <form
             onSubmit={e => { 
               e.preventDefault(); 
-              console.log('Form submitted, calling handleSendMessage');
+              logger.info('Form submitted, calling handleSendMessage');
               handleSendMessage(); 
             }}
             className="relative"
           >
-            <Textarea
+            <Input
               ref={textareaRef}
               id="chat-input"
               name="chat-input"
@@ -419,7 +418,7 @@ export const ChatInterface = ({ selectedTopic }: ChatInterfaceProps) => {
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  console.log('Enter key pressed, calling handleSendMessage');
+                  logger.info('Enter key pressed, calling handleSendMessage');
                   handleSendMessage();
                 }
               }}

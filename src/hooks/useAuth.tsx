@@ -1,9 +1,10 @@
 
-import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useTikTokDetection } from './useTikTokDetection';
 import { checkUserAccess, AccessCheckResult } from '@/services/accessCheck';
+import { logger } from '@/utils/logger';
 
 interface AuthContextType {
   user: User | null;
@@ -31,9 +32,9 @@ export const AuthProvider = ({ children }: { children: any }) => {
     try {
       const result = await checkUserAccess();
       setAccessCheckResult(result);
-      console.log('Access check result:', result);
+      logger.info('Access check result:', result);
     } catch (error) {
-      console.error('Access check failed:', error);
+      logger.error('Access check failed:', error);
       setAccessCheckResult({ hasAccess: false, reason: 'none' });
     }
   };
@@ -77,26 +78,26 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
   const testConnection = async () => {
     try {
-      console.log('Testing Supabase connection...');
+      logger.info('Testing Supabase connection...');
       
       // First try a simple ping
       const { data, error } = await supabase.from('profiles').select('count').limit(1);
       if (error) {
-        console.error('Supabase connection test failed:', error);
+        logger.error('Supabase connection test failed:', error);
         return false;
       }
-      console.log('Supabase connection test successful');
+      logger.info('Supabase connection test successful');
       return true;
     } catch (err) {
-      console.error('Supabase connection test exception:', err);
+      logger.error('Supabase connection test exception:', err);
       return false;
     }
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      console.log('Starting signup process...');
-      console.log('Email:', email);
+      logger.info('Starting signup process...');
+      logger.info('Email:', email);
       
       // Create user - email confirmation should now be disabled in Supabase
       const { data, error } = await supabase.auth.signUp({
@@ -109,17 +110,17 @@ export const AuthProvider = ({ children }: { children: any }) => {
       }
     });
 
-      console.log('Signup response:', { data, error });
+      logger.info('Signup response:', { data, error });
 
       if (error) {
-        console.error('Signup error:', error);
+        logger.error('Signup error:', error);
         return { data: null, error };
       }
 
       // User should be created with session immediately (no email confirmation)
       return { data, error: null };
     } catch (err) {
-      console.error('Signup exception:', err);
+      logger.error('Signup exception:', err);
       return { 
         data: null, 
         error: { 
@@ -131,26 +132,26 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('Starting signin process...');
-      console.log('Email:', email);
-      console.log('Password length:', password.length);
+      logger.info('Starting signin process...');
+      logger.info('Email:', email);
+      logger.info('Password length:', password.length);
       
       // Log environment variables (without exposing sensitive data)
-      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Present' : 'Missing');
-      console.log('Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
+      logger.info('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Present' : 'Missing');
+      logger.info('Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
       
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
       
-      console.log('Signin response:', { 
+      logger.info('Signin response:', { 
         data: data ? { user: data.user?.id, session: !!data.session } : null, 
         error 
       });
 
       if (error) {
-        console.error('Signin error details:', {
+        logger.error('Signin error details:', {
           message: error.message,
           status: error.status,
           name: error.name
@@ -180,7 +181,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
       return { data, error: null };
     } catch (err) {
-      console.error('Signin exception:', err);
+      logger.error('Signin exception:', err);
       return { 
         data: null, 
         error: { 
@@ -194,13 +195,13 @@ export const AuthProvider = ({ children }: { children: any }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Signout error:', error);
+        logger.error('Signout error:', error);
       }
       // Clear any fallback payment data
       localStorage.removeItem('paymentSuccess');
       localStorage.removeItem('paidUserEmail');
     } catch (err) {
-      console.error('Signout exception:', err);
+      logger.error('Signout exception:', err);
     }
   };
 
@@ -217,7 +218,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const hasAccess = paymentSuccess === 'true' && !!paidUserEmail;
     
     // Debug logging
-    console.log('hasPaidAccess check:', {
+    logger.info('hasPaidAccess check:', {
       paymentSuccess,
       paidUserEmail,
       hasAccess,

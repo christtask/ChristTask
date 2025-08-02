@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useStripe, useElements, CardElement, CardNumberElement } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import {
   PopoverContent
 } from '@/components/ui/popover';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/utils/logger';
 
 // List of countries that do NOT require postal code
 const noPostalCodeCountries = [
@@ -399,19 +400,19 @@ const PaymentPage = () => {
       return;
     }
     
-    console.log('Starting signup process...');
+    logger.info('Starting signup process...');
     
     // Test Supabase connection first
-    console.log('Testing Supabase connection...');
-    console.log('Environment check:');
-    console.log('- VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
-    console.log('- VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
+    logger.info('Testing Supabase connection...');
+    logger.info('Environment check:');
+    logger.info('- VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
+    logger.info('- VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
     
     try {
       const { data: testData, error: testError } = await supabase.from('profiles').select('count').limit(1);
-      console.log('Connection test result:', { testData, testError });
+      logger.info('Connection test result:', { testData, testError });
       if (testError) {
-        console.error('Supabase connection failed:', {
+        logger.error('Supabase connection failed:', {
           code: testError.code,
           message: testError.message,
           details: testError.details
@@ -420,27 +421,27 @@ const PaymentPage = () => {
         setLoading(false);
         return;
       }
-      console.log('Supabase connection successful!');
+      logger.info('Supabase connection successful!');
       
       // Sign up the user
-      console.log('Starting signup process...');
-      console.log('Email:', formData.email);
-      console.log('Redirect URL:', window.location.origin + '/payment');
+      logger.info('Starting signup process...');
+      logger.info('Email:', formData.email);
+      logger.info('Redirect URL:', window.location.origin + '/payment');
       
       const { data: signupData, error: signupError } = await signUp(formData.email, formData.password);
-      console.log('Signup response:', signupData);
+      logger.info('Signup response:', signupData);
       
       if (signupError) {
-        console.error('Signup failed:', signupError);
+        logger.error('Signup failed:', signupError);
         setError(signupError.message);
         setLoading(false); 
         return;
       }
       
-      console.log('Signup result:', signupData);
+      logger.info('Signup result:', signupData);
       
       if (signupData?.user && !signupData.user.email_confirmed_at) {
-        console.log('Email confirmation required, but proceeding with payment...');
+        logger.info('Email confirmation required, but proceeding with payment...');
         // Continue with payment even if email isn't confirmed yet
       }
       
@@ -451,9 +452,9 @@ const PaymentPage = () => {
         return;
       }
       
-      console.log('Stripe elements:', elements);
+      logger.info('Stripe elements:', elements);
       const cardElement = elements.getElement(CardElement);
-      console.log('Card element found:', cardElement);
+      logger.info('Card element found:', cardElement);
       
       if (!cardElement) throw new Error('Card Element not found');
       const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
@@ -461,8 +462,8 @@ const PaymentPage = () => {
       });
       if (paymentMethodError) throw new Error(paymentMethodError.message || 'Failed to create payment method');
       
-      console.log('Making backend request to:', 'https://christtask-backend.onrender.com/create-subscription');
-      console.log('Request payload:', {
+      logger.info('Making backend request to:', 'https://christtask-backend.onrender.com/create-subscription');
+      logger.info('Request payload:', {
         email: formData.email.trim(),
         userId: signupData?.user?.id || null,
         couponCode: formData.couponCode.trim(),
@@ -485,24 +486,24 @@ const PaymentPage = () => {
         }),
       });
         
-        console.log('Backend response status:', res.status, res.statusText);
+        logger.info('Backend response status:', res.status, res.statusText);
         
         if (res.ok) {
           // Backend worked - proceed normally
       const responseData = await res.json();
       
       // Automatically sign in the user after successful payment
-      console.log('Payment successful, signing in user...');
+      logger.info('Payment successful, signing in user...');
       const { error: signInError } = await signIn(formData.email, formData.password);
       
       if (signInError) {
-        console.warn('Auto sign-in failed, but payment was successful:', signInError);
+        logger.warn('Auto sign-in failed, but payment was successful:', signInError);
             // Even if sign-in fails, we can still allow access since payment was successful
             // Store payment success in localStorage as a fallback
             localStorage.setItem('paymentSuccess', 'true');
             localStorage.setItem('paidUserEmail', formData.email);
       } else {
-        console.log('User automatically signed in successfully');
+        logger.info('User automatically signed in successfully');
             // Clear any fallback data since sign-in worked
             localStorage.removeItem('paymentSuccess');
             localStorage.removeItem('paidUserEmail');
@@ -515,30 +516,30 @@ const PaymentPage = () => {
       });
       
       // Immediately redirect to chatbot without delays
-      console.log('Redirecting to chatbot after successful payment...');
+      logger.info('Redirecting to chatbot after successful payment...');
       navigate('/chatbot');
       return;
         } else {
-          console.error('Backend error response:', {
+          logger.error('Backend error response:', {
             status: res.status,
             statusText: res.statusText,
             url: res.url
           });
           
           if (res.status === 404) {
-            console.log('Backend endpoint not found, using frontend-only fallback...');
+            logger.info('Backend endpoint not found, using frontend-only fallback...');
             // Fall through to frontend-only solution
           } else {
             throw new Error(`Backend error: ${res.status} ${res.statusText}`);
           }
         }
       } catch (backendError) {
-        console.log('Backend failed, using frontend-only fallback:', backendError);
+        logger.info('Backend failed, using frontend-only fallback:', backendError);
         // Fall through to frontend-only solution
       }
       
       // FRONTEND-ONLY FALLBACK SOLUTION
-      console.log('Using frontend-only payment solution...');
+      logger.info('Using frontend-only payment solution...');
       
       // Store subscription info in user's profile instead
       const { error: profileError } = await supabase
@@ -550,22 +551,22 @@ const PaymentPage = () => {
         .eq('id', signupData?.user?.id);
       
       if (profileError) {
-        console.error('Failed to update profile:', profileError);
+        logger.error('Failed to update profile:', profileError);
         // Continue anyway - the payment was successful
       }
       
       // Automatically sign in the user
-      console.log('Payment successful, signing in user...');
+      logger.info('Payment successful, signing in user...');
       const { error: signInError } = await signIn(formData.email, formData.password);
       
       if (signInError) {
-        console.warn('Auto sign-in failed, but payment was successful:', signInError);
+        logger.warn('Auto sign-in failed, but payment was successful:', signInError);
         // Even if sign-in fails, we can still allow access since payment was successful
         // Store payment success in localStorage as a fallback
         localStorage.setItem('paymentSuccess', 'true');
         localStorage.setItem('paidUserEmail', formData.email);
       } else {
-        console.log('User automatically signed in successfully');
+        logger.info('User automatically signed in successfully');
         // Clear any fallback data since sign-in worked
         localStorage.removeItem('paymentSuccess');
         localStorage.removeItem('paidUserEmail');
@@ -578,12 +579,12 @@ const PaymentPage = () => {
       });
       
       // Immediately redirect to chatbot without delays
-      console.log('Redirecting to chatbot after successful payment...');
+      logger.info('Redirecting to chatbot after successful payment...');
       navigate('/chatbot');
       return;
       
     } catch (error: any) {
-      console.error('Payment error:', error);
+      logger.error('Payment error:', error);
       
       // Provide more specific error messages
       let errorMessage = 'Payment failed.';

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { logger } from '@/utils/logger';
 
 
 interface ChatMessage {
@@ -114,9 +115,9 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
       const data = await response.json();
       
-      console.log('API Response data:', data);
-      console.log('Answer field:', data.answer);
-      console.log('Response field:', data.response);
+      logger.log('API Response data:', data);
+      logger.log('Answer field:', data.answer);
+      logger.log('Response field:', data.response);
 
       // Update loading message with actual response
       const assistantMessage: ChatMessage = {
@@ -130,14 +131,14 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
         difficulty: data.difficulty,
       };
       
-      console.log('Assistant message content:', assistantMessage.content);
+      logger.log('Assistant message content:', assistantMessage.content);
 
       setMessages(prev => 
         prev.map(msg => msg.id === loadingMessage.id ? assistantMessage : msg)
       );
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
       // Update loading message with error
       const errorMessage: ChatMessage = {
         id: loadingMessage.id,
@@ -233,7 +234,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
 
       if (selectedVoice) {
         utterance.voice = selectedVoice;
-        console.log('Selected voice:', selectedVoice.name);
+        logger.log('Selected voice:', selectedVoice.name);
       }
 
       utterance.onstart = () => {
@@ -245,7 +246,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
       };
 
       utterance.onerror = (event) => {
-        console.error('Speech synthesis error:', event);
+        logger.error('Speech synthesis error:', event);
         setSpeakingMessageId(null);
         toast({
           title: "Audio Error",
@@ -283,7 +284,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
         setCopiedMessageId(null);
       }, 2000);
     } catch (error) {
-      console.error('Failed to copy message:', error);
+      logger.error('Failed to copy message:', error);
       
       // Fallback for older browsers
       try {
@@ -305,7 +306,7 @@ export default function ApologeticsChat({ className = '' }: ApologeticsChatProps
           setCopiedMessageId(null);
         }, 2000);
       } catch (fallbackError) {
-        console.error('Fallback copy also failed:', fallbackError);
+        logger.error('Fallback copy also failed:', fallbackError);
         toast({
           title: "Copy failed",
           description: "Unable to copy message to clipboard",

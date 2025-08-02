@@ -1,13 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Home, MessageSquare, BookOpen } from "lucide-react";
+import React from 'react';
+import { Home, MessageSquare, BookOpen, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { logger } from '@/utils/logger';
 
 interface BottomNavigationProps {
-  activeTab: 'home' | 'chatbot' | 'bible' | 'forum';
-  onTabChange: (tab: 'home' | 'chatbot' | 'bible' | 'forum') => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
 export const BottomNavigation = ({ activeTab, onTabChange }: BottomNavigationProps) => {
-  console.log('BottomNavigation rendered with activeTab:', activeTab);
+  logger.info('BottomNavigation rendered with activeTab:', activeTab);
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full z-[999] bg-[#1a1a1a] backdrop-blur-md border-t border-[#222] shadow-lg">

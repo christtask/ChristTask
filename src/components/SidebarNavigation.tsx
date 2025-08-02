@@ -11,6 +11,7 @@ import {
   X
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/utils/logger';
 
 interface SidebarNavigationProps {
   activeTab: 'home' | 'chatbot' | 'bible' | 'forum';
@@ -41,12 +42,12 @@ export const SidebarNavigation = ({ activeTab, onTabChange, onCollapseChange }: 
 
   const handleLogout = async () => {
     try {
-      console.log('Logging out user...');
+      logger.info('Logging out user...');
       await signOut();
-      console.log('Logout successful');
+      logger.info('Logout successful');
       // The user will be redirected automatically by the auth state change in App.tsx
     } catch (error) {
-      console.error('Logout failed:', error);
+      logger.error('Logout failed:', error);
     }
   };
 

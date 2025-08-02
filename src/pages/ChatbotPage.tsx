@@ -1,7 +1,8 @@
 import RAGChatbotSimple from '../components/RAGChatbotSimple';
+import { logger } from '../utils/logger';
 
 export default function ChatbotPage() {
-  console.log('ChatbotPage rendered');
+  logger.info('ChatbotPage rendered');
   
   // Show chatbot directly without any authentication checks
   return (
