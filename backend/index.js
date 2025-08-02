@@ -11,8 +11,8 @@ app.use(express.json());
 
 // Stripe Price IDs - Replace with your actual price IDs from Stripe Dashboard
 const STRIPE_PRICES = {
-  weekly: process.env.STRIPE_WEEKLY_PRICE_ID || 'price_weekly_placeholder',
-  monthly: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_monthly_placeholder'
+  weekly: 'price_1ReOQ7FEfjI8S6GYiTNrAvPb',
+  monthly: 'price_1ReOLjFEfjI8S6GYAe7YSlOt'
 };
 
 // Create recurring subscription
