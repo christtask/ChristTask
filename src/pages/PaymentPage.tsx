@@ -318,6 +318,7 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [showPassword, setShowPassword] = useState(false);
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
   
@@ -820,17 +821,26 @@ const PaymentPage = () => {
                   <Label htmlFor="password" className="text-sm font-medium text-slate-700">
                     Password <span className="text-red-600">*</span>
                   </Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Create a password (min 6 chars)"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    minLength={6}
-                    className="mt-1 !bg-white !text-black border-slate-200 placeholder:text-gray-500"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a password (min 6 chars)"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                      minLength={6}
+                      className="mt-1 !bg-white !text-black border-slate-200 placeholder:text-gray-500 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
                 </div>
               </div>
               {error && (
