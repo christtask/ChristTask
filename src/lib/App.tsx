@@ -107,9 +107,18 @@ function AppShell() {
 
   // Check if user has access (logged in or paid)
   const hasAccess = user || hasPaidAccess();
+  
+  // Debug logging for access check
+  console.log('AppShell - hasAccess check:', {
+    user: !!user,
+    hasPaidAccess: hasPaidAccess(),
+    finalHasAccess: hasAccess,
+    isMobile: isMobile
+  });
 
   // If user is not authenticated and doesn't have paid access, show only the routes without navigation
   if (!hasAccess) {
+    console.log('AppShell - No access, showing routes without navigation');
     return (
       <div className="min-h-screen">
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -118,6 +127,7 @@ function AppShell() {
   }
 
   // Show responsive navigation only for authenticated users or users with paid access
+  console.log('AppShell - Has access, showing navigation');
   return (
     <div className="flex min-h-screen h-screen">
       {/* Desktop Sidebar Navigation */}
@@ -135,8 +145,8 @@ function AppShell() {
       }`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
         
-        {/* Mobile Bottom Navigation */}
-        {isMobile && (
+        {/* Mobile Bottom Navigation - Only show for authenticated users */}
+        {isMobile && hasAccess && (
           <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
         )}
       </div>

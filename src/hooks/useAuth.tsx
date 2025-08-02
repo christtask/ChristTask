@@ -174,7 +174,16 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const paymentSuccess = localStorage.getItem('paymentSuccess');
     const paidUserEmail = localStorage.getItem('paidUserEmail');
     
-    return paymentSuccess === 'true' && !!paidUserEmail;
+    const hasAccess = paymentSuccess === 'true' && !!paidUserEmail;
+    
+    // Debug logging
+    console.log('hasPaidAccess check:', {
+      paymentSuccess,
+      paidUserEmail,
+      hasAccess
+    });
+    
+    return hasAccess;
   };
 
   const value = {
