@@ -5,9 +5,31 @@ require('dotenv').config();
 
 const app = express();
 
+// Basic rate limiting
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://christtask.com', 'http://localhost:3000'],
+  credentials: true
+}));
+app.use(limiter);
 app.use(express.json());
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
 
 // Stripe Price IDs - Replace with your actual price IDs from Stripe Dashboard
 const STRIPE_PRICES = {

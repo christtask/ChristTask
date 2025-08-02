@@ -389,13 +389,18 @@ const PaymentPage = () => {
     setError('');
     
     // Validation
-    if (!formData.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email)) {
-      setError('Enter a valid email.'); 
+    if (!formData.email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
+      setError('Enter a valid email address.'); 
       setLoading(false); 
       return;
     }
-    if (!formData.password || formData.password.length < 6) {
-      setError('Password must be at least 6 characters.'); 
+    if (!formData.password || formData.password.length < 8) {
+      setError('Password must be at least 8 characters long.'); 
+      setLoading(false); 
+      return;
+    }
+    if (!formData.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)) {
+      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number.'); 
       setLoading(false); 
       return;
     }
