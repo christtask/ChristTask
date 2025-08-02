@@ -321,8 +321,8 @@ const Index = () => {
           )}
         </div>
 
-        {/* Bottom Navigation Bar */}
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        {/* Bottom Navigation Bar - REMOVED: This should be handled by App.tsx with auth checks */}
+        {/* <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} /> */}
       </div>
     );
   }
