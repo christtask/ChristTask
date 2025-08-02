@@ -2,8 +2,16 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+console.log("VITE_ENV_TEST:", import.meta.env);
+
+// ✅ Log to confirm this file is running at all
+console.log("Hello from client.ts!");
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// ✅ Log environment variables for debugging
+console.log("ENV CHECK:", { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY });
 
 // Create a mock client if environment variables are missing
 const createMockClient = () => {
@@ -22,6 +30,5 @@ const createMockClient = () => {
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY 
-  ? createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
-  : createMockClient();
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY); 
+
