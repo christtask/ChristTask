@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { TypewriterEffect } from "@/components/TypewriterEffect";
 import { OrganicWaveDivider } from "@/components/OrganicWaveDivider";
 import { HeroSection } from "@/components/HeroSection";
+import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   MessageSquare, 
   Shield, 
@@ -24,7 +26,8 @@ import {
   Globe,
   Book,
   Video,
-  Mic
+  Mic,
+  LogOut
 } from "lucide-react";
 
 // Custom hook for scroll-triggered animations
@@ -73,6 +76,8 @@ export const LandingPage = ({
   const [headingRef, isHeadingVisible] = useScrollAnimation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user, signOut } = useAuth();
+  const isMobile = useIsMobile();
 
   const handleStartJourney = () => {
     navigate('/payment');
@@ -80,6 +85,11 @@ export const LandingPage = ({
 
   const handleHowItWorks = () => {
     navigate('/how-it-works');
+  };
+
+  const handleLogOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   // Close menu when clicking outside
@@ -115,6 +125,14 @@ export const LandingPage = ({
             </div>
             {/* Hamburger Icon - always visible top right */}
             <div ref={menuRef} className="flex items-center absolute right-4 top-4 z-[9999] space-x-4">
+              {user && isMobile && (
+                <button
+                  onClick={handleLogOut}
+                  className="text-white hover:text-blue-300 transition-colors duration-200 font-medium"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              )}
               <button
                 onClick={() => window.location.href = '/login'}
                 className="text-white hover:text-blue-300 transition-colors duration-200 font-medium"
