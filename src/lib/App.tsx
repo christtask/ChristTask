@@ -25,22 +25,39 @@ const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMf
 
 function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) {
   const navigate = useNavigate();
+  const { user, hasPaidAccess } = useAuth();
+  
+  // Check if user has access
+  const hasAccess = user || hasPaidAccess();
+  
+  // Protected route component
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (!hasAccess) {
+      // Redirect to home page if no access
+      navigate('/');
+      return null;
+    }
+    return <>{children}</>;
+  };
+  
   return (
       <Routes>
-      <Route path="/" element={<LandingPage onGetStarted={() => navigate('/payment')} onHowItWorks={() => {}} onAuthAction={() => {}} onLogoClick={() => {}} />} />
+        <Route path="/" element={<LandingPage onGetStarted={() => navigate('/payment')} onHowItWorks={() => {}} onAuthAction={() => {}} onLogoClick={() => {}} />} />
         <Route path="/payment" element={<PaymentPageWrapper />} />
         <Route path="/demo-payment" element={<DemoPaymentPage />} />
         <Route path="/success" element={<WelcomeToChatbot onStartChat={() => navigate('/chatbot')} />} />
-        <Route path="/chatbot" element={<ChatbotPage />} />
-        <Route path="/chatbot-simple" element={<ChatbotPage />} />
-        <Route path="/chatbot-test" element={<AIChatbotTest />} />
-        <Route path="/rag-test" element={<RAGTest />} />
-        <Route path="/simple-rag-test" element={<SimpleRAGTest />} />
-        <Route path="/bible" element={<BiblePage />} />
+        <Route path="/chatbot" element={<ProtectedRoute><ChatbotPage /></ProtectedRoute>} />
+        <Route path="/chatbot-simple" element={<ProtectedRoute><ChatbotPage /></ProtectedRoute>} />
+        <Route path="/chatbot-test" element={<ProtectedRoute><AIChatbotTest /></ProtectedRoute>} />
+        <Route path="/rag-test" element={<ProtectedRoute><RAGTest /></ProtectedRoute>} />
+        <Route path="/simple-rag-test" element={<ProtectedRoute><SimpleRAGTest /></ProtectedRoute>} />
+        <Route path="/bible" element={<ProtectedRoute><BiblePage /></ProtectedRoute>} />
         <Route path="/forum" element={
-          <div className="flex items-center justify-center min-h-screen bg-gray-900">
-            <div className="text-white text-2xl font-semibold">Forum Coming Soon...</div>
-          </div>
+          <ProtectedRoute>
+            <div className="flex items-center justify-center min-h-screen bg-gray-900">
+              <div className="text-white text-2xl font-semibold">Forum Coming Soon...</div>
+            </div>
+          </ProtectedRoute>
         } />
         <Route path="/login" element={<AuthPage initialMode="signin" onBack={() => navigate('/')} />} />
         <Route path="/test-backend" element={<BackendTest />} />
