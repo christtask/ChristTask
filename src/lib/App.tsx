@@ -20,6 +20,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useIsMobile } from '../hooks/use-mobile';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { BackendTest } from '../components/BackendTest';
+import { isTikTokBrowser } from '../utils/browserDetection';
 
 const stripePromise = loadStripe("pk_live_51RZvWwFEfjI8S6GYRjyPtWWfSZ0iQEAEQ3oMfKSsjtBP5h47m7G2HvnpKEyXYJNZ9WyvCVcl1TJTSRNQMvaQju6d00YaYe3dhu");
 
@@ -68,16 +69,50 @@ function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTa
 function AppShell() {
   const [activeTab, setActiveTab] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showBottomNav, setShowBottomNav] = useState(false);
   const navigate = useNavigate();
-  const { user, loading, hasPaidAccess, accessCheckResult, refreshAccessCheck } = useAuth();
+  const { user, loading, hasPaidAccess } = useAuth();
   const [wasAuthenticated, setWasAuthenticated] = useState(false);
   const isMobile = useIsMobile();
+
+  // Check access based on browser type
+  useEffect(() => {
+    async function checkAccess() {
+      if (isTikTokBrowser()) {
+        // Don't trust local storage, ask backend
+        try {
+          const res = await fetch('/api/check-access', { 
+            cache: 'no-store',
+            headers: {
+              'x-payment-success': localStorage.getItem('paymentSuccess') || '',
+              'x-paid-user-email': localStorage.getItem('paidUserEmail') || ''
+            }
+          });
+          const data = await res.json();
+          setShowBottomNav(data.hasAccess);
+          console.log('TikTok access check result:', data);
+        } catch (error) {
+          console.error('TikTok access check failed:', error);
+          setShowBottomNav(false);
+        }
+      } else {
+        // Your existing logic (local/session access)
+        const hasAccess = user || hasPaidAccess();
+        setShowBottomNav(hasAccess);
+        console.log('Regular browser access check:', { user: !!user, hasPaidAccess: hasPaidAccess() });
+      }
+    }
+
+    if (!loading) {
+      checkAccess();
+    }
+  }, [user, loading, hasPaidAccess]);
 
   // Debug logging
   console.log('AppShell - isMobile:', isMobile);
   console.log('AppShell - user:', user);
   console.log('AppShell - loading:', loading);
-  console.log('AppShell - accessCheckResult:', accessCheckResult);
+  console.log('AppShell - showBottomNav:', showBottomNav);
 
   // Track if user was previously authenticated
   useEffect(() => {
@@ -123,21 +158,8 @@ function AppShell() {
     );
   }
 
-  // Check if user has access (logged in or paid)
-  const hasAccess = user || hasPaidAccess();
-  
-  // Debug logging for access check
-  console.log('AppShell - hasAccess check:', {
-    user: !!user,
-    hasPaidAccess: hasPaidAccess(),
-    finalHasAccess: hasAccess,
-    isMobile: isMobile,
-    shouldShowBottomNav: isMobile && hasAccess,
-    accessCheckResult: accessCheckResult
-  });
-
-  // If user is not authenticated and doesn't have paid access, show only the routes without navigation
-  if (!hasAccess) {
+  // If user doesn't have access, show only the routes without navigation
+  if (!showBottomNav) {
     console.log('AppShell - No access, showing routes without navigation');
     return (
       <div className="min-h-screen">
@@ -146,7 +168,7 @@ function AppShell() {
     );
   }
 
-  // Show responsive navigation only for authenticated users or users with paid access
+  // Show responsive navigation only for users with access
   console.log('AppShell - Has access, showing navigation');
   return (
     <div className="flex min-h-screen h-screen">
@@ -165,8 +187,8 @@ function AppShell() {
       }`}>
         <AppRoutes activeTab={activeTab} setActiveTab={setActiveTab} />
         
-        {/* Mobile Bottom Navigation - Only show for authenticated users */}
-        {isMobile && hasAccess && (
+        {/* Mobile Bottom Navigation - Only show for users with access */}
+        {isMobile && showBottomNav && (
           <>
             {console.log('AppShell - Rendering BottomNavigation for mobile with access')}
             <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />

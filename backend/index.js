@@ -818,6 +818,38 @@ app.post('/check-subscription', async (req, res) => {
   }
 });
 
+// Access check endpoint for TikTok browsers
+app.get('/api/check-access', async (req, res) => {
+  try {
+    // Get user session from Supabase
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.error('Session check error:', sessionError);
+      return res.json({ hasAccess: false });
+    }
+
+    // Check if user is authenticated
+    if (session?.user) {
+      return res.json({ hasAccess: true });
+    }
+
+    // Check for guest payment access
+    const paymentSuccess = req.headers['x-payment-success'];
+    const paidUserEmail = req.headers['x-paid-user-email'];
+    
+    if (paymentSuccess === 'true' && paidUserEmail) {
+      return res.json({ hasAccess: true });
+    }
+
+    return res.json({ hasAccess: false });
+    
+  } catch (error) {
+    console.error('Access check error:', error);
+    return res.json({ hasAccess: false });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
