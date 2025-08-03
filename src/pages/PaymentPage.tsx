@@ -889,7 +889,7 @@ const PaymentPage = () => {
                   {/* Country Selection */}
                   <div>
                     <div className="flex items-center justify-between">
-                    <Label htmlFor="country" className="text-sm font-medium text-slate-700">
+                    <Label className="text-sm font-medium text-slate-700">
                       Country
                     </Label>
                       {!locationLoading && countryCode && countryCode === selectedCountry && (

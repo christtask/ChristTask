@@ -229,9 +229,10 @@ const PaymentPageNewInner = () => {
         </div>
 
         <div style={{ marginBottom: 18 }}>
-          <label style={{ fontWeight: 600, color: "#fff" }}>
+          <label htmlFor="couponCode" style={{ fontWeight: 600, color: "#fff" }}>
           Coupon Code (optional):
           <input
+            id="couponCode"
             type="text"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
@@ -242,9 +243,10 @@ const PaymentPageNewInner = () => {
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <label style={{ fontWeight: 600, color: "#fff" }}>
+          <label htmlFor="cardElement" style={{ fontWeight: 600, color: "#fff" }}>
           Card Details:
           <div
+            id="cardElement"
             style={{
                 border: "2px solid #23272F",
                 padding: 14,

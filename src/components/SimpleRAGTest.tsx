@@ -101,8 +101,9 @@ export const SimpleRAGTest: React.FC = () => {
       </div>
       
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Test Message:</label>
+        <label htmlFor="testMessage" style={{ display: 'block', marginBottom: '5px' }}>Test Message:</label>
         <textarea
+          id="testMessage"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Enter a test message..."
@@ -134,15 +135,18 @@ export const SimpleRAGTest: React.FC = () => {
 
       {response && (
         <div>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Response:</label>
-          <pre style={{ 
-            backgroundColor: '#f8f9fa',
-            padding: '15px',
-            borderRadius: '5px',
-            overflow: 'auto',
-            maxHeight: '400px',
-            border: '1px solid #dee2e6'
-          }}>
+          <label htmlFor="response" style={{ display: 'block', marginBottom: '5px' }}>Response:</label>
+          <pre 
+            id="response"
+            style={{ 
+              backgroundColor: '#f8f9fa',
+              padding: '15px',
+              borderRadius: '5px',
+              overflow: 'auto',
+              maxHeight: '400px',
+              border: '1px solid #dee2e6'
+            }}
+          >
             {response}
           </pre>
         </div>

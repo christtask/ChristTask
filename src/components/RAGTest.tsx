@@ -84,8 +84,9 @@ export const RAGTest: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Test Message:</label>
+              <label htmlFor="testMessage" className="block text-sm font-medium mb-2">Test Message:</label>
               <Textarea
+                id="testMessage"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter a test message..."
@@ -105,8 +106,8 @@ export const RAGTest: React.FC = () => {
 
             {response && (
               <div>
-                <label className="block text-sm font-medium mb-2">Response:</label>
-                <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">
+                <label htmlFor="response" className="block text-sm font-medium mb-2">Response:</label>
+                <pre id="response" className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-96">
                   {response}
                 </pre>
               </div>
