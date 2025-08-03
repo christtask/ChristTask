@@ -23,6 +23,4 @@ const createMockClient = () => {
   };
 };
 
-export const supabase = SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
-  ? createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
-  : createMockClient();
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
