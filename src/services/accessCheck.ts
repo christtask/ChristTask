@@ -27,18 +27,18 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
         .select('*')
         .eq('user_id', session.user.id)
         .eq('subscribed', true)
-        .single();
+        .limit(1);
 
       if (subError && subError.code !== 'PGRST116') { // PGRST116 = no rows returned
         console.error('Subscription check error:', subError);
       }
 
-      if (subscriptions) {
+      if (subscriptions && subscriptions.length > 0) {
         return {
           hasAccess: true,
           reason: 'paid',
           userEmail,
-          subscriptionStatus: subscriptions.subscribed ? 'active' : 'inactive'
+          subscriptionStatus: subscriptions[0].subscribed ? 'active' : 'inactive'
         };
       }
 
