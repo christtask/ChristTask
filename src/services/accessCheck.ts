@@ -21,24 +21,44 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
     if (session?.user) {
       const userEmail = session.user.email;
       
-      // Check if user has an active subscription
-      const { data: subscriptions, error: subError } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('subscribed', true)
-        .limit(1);
+      try {
+        // Check if user has an active subscription
+        const { data: subscriptions, error: subError } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .eq('subscribed', true)
+          .limit(1);
 
-      if (subError && subError.code !== 'PGRST116') { // PGRST116 = no rows returned
-        console.error('Subscription check error:', subError);
-      }
+        if (subError) {
+          console.error('Subscription check error:', subError);
+          // If it's a 401 error, the user might not have proper permissions
+          if (subError.code === 'PGRST301' || subError.message?.includes('401')) {
+            console.warn('User not authorized to access subscriptions table');
+            // Fall back to authenticated access
+            return {
+              hasAccess: true,
+              reason: 'authenticated',
+              userEmail
+            };
+          }
+        }
 
-      if (subscriptions && subscriptions.length > 0) {
+        if (subscriptions && subscriptions.length > 0) {
+          return {
+            hasAccess: true,
+            reason: 'paid',
+            userEmail,
+            subscriptionStatus: subscriptions[0].subscribed ? 'active' : 'inactive'
+          };
+        }
+      } catch (subscriptionError) {
+        console.error('Subscription query failed:', subscriptionError);
+        // Fall back to authenticated access if subscription check fails
         return {
           hasAccess: true,
-          reason: 'paid',
-          userEmail,
-          subscriptionStatus: subscriptions[0].subscribed ? 'active' : 'inactive'
+          reason: 'authenticated',
+          userEmail
         };
       }
 
