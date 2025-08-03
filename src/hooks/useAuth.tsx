@@ -153,8 +153,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
       if (error) {
         logger.error('Signin error details:', {
           message: error.message,
-          status: error.status,
-          name: error.name
+          status: (error as any).status,
+          name: (error as any).name
         });
         
         // Provide more specific error messages
@@ -166,7 +166,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
           userFriendlyMessage = 'Please check your email and click the confirmation link before signing in.';
         } else if (error.message.includes('Too many requests')) {
           userFriendlyMessage = 'Too many login attempts. Please wait a moment before trying again.';
-        } else if (error.status === 400) {
+        } else if ((error as any).status === 400) {
           userFriendlyMessage = 'Invalid request. Please check your email and password format.';
         }
         

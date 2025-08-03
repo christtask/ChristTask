@@ -12,31 +12,57 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 console.log("ENV CHECK:", { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY });
 
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  console.error('❌ CRITICAL: Missing Supabase environment variables!');
+  console.error('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment.');
+  console.error('This will cause authentication and database operations to fail.');
+}
+
 const createMockClient = () => {
-  console.warn('Missing Supabase environment variables. Using mock client.');
+  console.warn('⚠️ Missing Supabase environment variables. Using mock client.');
+  console.warn('Authentication and database operations will not work.');
   return {
     auth: {
-      signInWithPassword: async () => ({ data: null, error: { message: 'Authentication not configured' } }),
-      signUp: async () => ({ data: null, error: { message: 'Authentication not configured' } }),
+      signInWithPassword: async () => ({ 
+        data: null, 
+        error: { 
+          message: 'Authentication not configured - missing environment variables' 
+        } 
+      }),
+      signUp: async () => ({ 
+        data: null, 
+        error: { 
+          message: 'Authentication not configured - missing environment variables' 
+        } 
+      }),
       signOut: async () => ({ error: null }),
       getSession: async () => ({ data: { session: null }, error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
     },
     from: () => ({
-      select: () => ({ limit: () => Promise.resolve({ data: [], error: null }) }),
+      select: () => ({ 
+        limit: () => Promise.resolve({ 
+          data: [], 
+          error: { message: 'Database not configured - missing environment variables' } 
+        }) 
+      }),
     }),
   };
 };
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      'Accept': 'application/json'
-    }
-  }
-});
+// Use mock client if environment variables are missing
+export const supabase = (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) 
+  ? createMockClient()
+  : createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    });

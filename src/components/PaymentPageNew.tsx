@@ -254,8 +254,7 @@ const PaymentPageNewInner = () => {
             }}
           >
             <CardElement options={{ 
-              hidePostalCode: true,
-              paymentMethodOrder: ['card']
+              hidePostalCode: true
             }} />
           </div>
         </label>
