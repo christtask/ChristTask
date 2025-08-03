@@ -627,6 +627,8 @@ const PaymentPage = () => {
         color: '#9e2146',
       },
     },
+    // Disable digital wallets - only allow card payments
+    paymentMethodOrder: ['card'],
     // Improved validation options
     classes: {
       base: 'form-control',

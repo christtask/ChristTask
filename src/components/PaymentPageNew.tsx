@@ -253,7 +253,10 @@ const PaymentPageNewInner = () => {
                 background: "#23272F"
             }}
           >
-            <CardElement options={{ hidePostalCode: true }} />
+            <CardElement options={{ 
+              hidePostalCode: true,
+              paymentMethodOrder: ['card']
+            }} />
           </div>
         </label>
         </div>
