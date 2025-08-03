@@ -26,7 +26,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
         .from('subscriptions')
         .select('*')
         .eq('user_id', session.user.id)
-        .eq('status', 'active')
+        .eq('subscribed', true)
         .single();
 
       if (subError && subError.code !== 'PGRST116') { // PGRST116 = no rows returned
@@ -38,7 +38,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
           hasAccess: true,
           reason: 'paid',
           userEmail,
-          subscriptionStatus: subscriptions.status
+          subscriptionStatus: subscriptions.subscribed ? 'active' : 'inactive'
         };
       }
 
