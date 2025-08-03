@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useStripe, useElements, CardElement, CardNumberElement } from '@stripe/react-stripe-js';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -418,9 +418,9 @@ const PaymentPage = () => {
       logger.info('Connection test result:', { testData, testError });
       if (testError) {
         logger.error('Supabase connection failed:', {
-          code: testError.code,
+          code: (testError as any).code,
           message: testError.message,
-          details: testError.details
+          details: (testError as any).details
         });
         setError(`Connection failed: ${testError.message}. Please check your Supabase configuration.`);
         setLoading(false);
@@ -547,16 +547,21 @@ const PaymentPage = () => {
       logger.info('Using frontend-only payment solution...');
       
       // Store subscription info in user's profile instead
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          full_name: `Subscriber - ${selectedPlan} plan`,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', signupData?.user?.id);
-      
-      if (profileError) {
-        logger.error('Failed to update profile:', profileError);
+      try {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: `Subscriber - ${selectedPlan} plan`,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', signupData?.user?.id);
+        
+        if (profileError) {
+          logger.error('Failed to update profile:', profileError);
+          // Continue anyway - the payment was successful
+        }
+      } catch (profileError) {
+        logger.error('Profile update failed:', profileError);
         // Continue anyway - the payment was successful
       }
       
