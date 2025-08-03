@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { getValidSession, debugAuthState } from '@/utils/auth';
 
 export interface AccessCheckResult {
   hasAccess: boolean;
@@ -9,18 +10,22 @@ export interface AccessCheckResult {
 
 export const checkUserAccess = async (): Promise<AccessCheckResult> => {
   try {
-    // Get current session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    // Debug current auth state
+    await debugAuthState();
     
-    if (sessionError) {
-      console.error('Session check error:', sessionError);
+    // Get current session with proper validation
+    const session = await getValidSession();
+    
+    if (!session) {
+      console.log('No valid session found');
       return { hasAccess: false, reason: 'none' };
     }
 
+    const userEmail = session.user.email;
+    console.log('User authenticated:', { userId: session.user.id, email: userEmail });
+
     // If user is authenticated, check their subscription
     if (session?.user) {
-      const userEmail = session.user.email;
-      
       try {
         // Check if user has an active subscription
         const { data: subscriptions, error: subError } = await supabase
@@ -45,6 +50,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
         }
 
         if (subscriptions && subscriptions.length > 0) {
+          console.log('User has active subscription');
           return {
             hasAccess: true,
             reason: 'paid',
@@ -67,6 +73,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
       const paidUserEmail = localStorage.getItem('paidUserEmail');
       
       if (paymentSuccess === 'true' && paidUserEmail === userEmail) {
+        console.log('User has legacy paid access');
         return {
           hasAccess: true,
           reason: 'paid',
@@ -75,6 +82,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
         };
       }
 
+      console.log('User has authenticated access');
       return {
         hasAccess: true,
         reason: 'authenticated',
@@ -87,6 +95,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
     const paidUserEmail = localStorage.getItem('paidUserEmail');
     
     if (paymentSuccess === 'true' && paidUserEmail) {
+      console.log('Guest has paid access');
       return {
         hasAccess: true,
         reason: 'paid',
@@ -95,6 +104,7 @@ export const checkUserAccess = async (): Promise<AccessCheckResult> => {
       };
     }
 
+    console.log('No access found');
     return { hasAccess: false, reason: 'none' };
     
   } catch (error) {
