@@ -5,9 +5,8 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from "react-router-dom";
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+import { stripePromise } from '../lib/stripe';
 
 const PLANS = [
   {

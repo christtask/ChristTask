@@ -1,13 +1,29 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-require('dotenv').config();
-
-const app = express();
-
-// Basic rate limiting
+const Stripe = require('stripe');
+const OpenAI = require('openai');
+const { Pinecone } = require('@pinecone-database/pinecone');
+const helmet = require('helmet');
+const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 
+// Environment variable validation
+const requiredEnvVars = [
+  'STRIPE_SECRET_KEY',
+  'OPENAI_API_KEY'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingVars);
+  console.error('Please check your .env file in the backend directory');
+}
+
+const app = express();
+const stripe = process.env.STRIPE_SECRET_KEY ? Stripe(process.env.STRIPE_SECRET_KEY) : null;
+
+// Basic rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs

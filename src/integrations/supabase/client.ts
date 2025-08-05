@@ -10,7 +10,18 @@ console.log("PRODUCTION ENV CHECK:", {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log("ENV CHECK:", { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY });
+console.log("ENV CHECK:", { 
+  SUPABASE_URL, 
+  SUPABASE_PUBLISHABLE_KEY: SUPABASE_PUBLISHABLE_KEY ? 'Present' : 'Missing',
+  SUPABASE_URL_LENGTH: SUPABASE_URL?.length,
+  SUPABASE_KEY_LENGTH: SUPABASE_PUBLISHABLE_KEY?.length
+});
+
+// Debug the actual values (first 20 chars for security)
+console.log("ACTUAL VALUES:", {
+  SUPABASE_URL: SUPABASE_URL?.substring(0, 20) + '...',
+  SUPABASE_KEY_START: SUPABASE_PUBLISHABLE_KEY?.substring(0, 20) + '...'
+});
 
 // Validate environment variables
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
@@ -52,7 +63,16 @@ const createMockClient = () => {
 };
 
 // Use mock client if environment variables are missing
-export const supabase = (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) 
+const useMockClient = !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY;
+
+console.log("SUPABASE CLIENT DECISION:", {
+  useMockClient,
+  hasUrl: !!SUPABASE_URL,
+  hasKey: !!SUPABASE_PUBLISHABLE_KEY,
+  reason: useMockClient ? 'Missing environment variables' : 'Using real client'
+});
+
+export const supabase = useMockClient
   ? createMockClient()
   : createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {

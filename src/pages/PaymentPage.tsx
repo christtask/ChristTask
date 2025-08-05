@@ -322,6 +322,26 @@ const PaymentPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
+
+  // Stripe Debug Test
+  useEffect(() => {
+    console.log('🔍 STRIPE DEBUG TEST:', {
+      stripeKeyPresent: !!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
+      stripeKeyStart: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.substring(0, 10),
+      stripeKeyLength: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.length,
+      stripeLoaded: !!stripe,
+      elementsLoaded: !!elements,
+      environment: import.meta.env.MODE,
+      url: window.location.href
+    });
+
+    // Test Stripe connection
+    if (stripe) {
+      console.log('✅ Stripe loaded successfully');
+    } else {
+      console.log('❌ Stripe failed to load');
+    }
+  }, [stripe, elements]);
   
   // Static pricing - no geolocation dependency
   const countryCode = 'GB';
@@ -383,10 +403,39 @@ const PaymentPage = () => {
     return (originalPrice * countryInfo.rate).toFixed(2);
   };
 
+  // Test Stripe Configuration
+  const testStripeConfig = () => {
+    console.log('🧪 TESTING STRIPE CONFIGURATION:');
+    console.log('1. Environment Variables:');
+    console.log('   - VITE_STRIPE_PUBLISHABLE_KEY:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? 'Present' : 'Missing');
+    console.log('   - Key starts with:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.substring(0, 10));
+    console.log('   - Key length:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.length);
+    
+    console.log('2. Stripe Objects:');
+    console.log('   - Stripe loaded:', !!stripe);
+    console.log('   - Elements loaded:', !!elements);
+    
+    console.log('3. Environment:');
+    console.log('   - Mode:', import.meta.env.MODE);
+    console.log('   - URL:', window.location.href);
+    
+    // Test if we can create a payment method
+    if (stripe && elements) {
+      console.log('4. Stripe Integration Test:');
+      console.log('   - Can create payment method: true');
+    } else {
+      console.log('4. Stripe Integration Test:');
+      console.log('   - Can create payment method: false (stripe or elements not loaded)');
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    // Run Stripe test before proceeding
+    testStripeConfig();
     
     // Validation
     if (!formData.email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {

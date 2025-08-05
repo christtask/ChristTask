@@ -24,10 +24,8 @@ import { isTikTokBrowser } from '../utils/browserDetection';
 import NotFound from '../pages/NotFound';
 import { logger } from '../utils/logger';
 
-// 🚨 IMPORTANT: Switch between test and live keys
-// For testing: Use test keys (starts with pk_test_)
-// For production: Use live keys (starts with pk_live_)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Use centralized Stripe configuration
+import { stripePromise } from './stripe';
 
 function AppRoutes({ activeTab, setActiveTab }: { activeTab: string; setActiveTab: (tab: string) => void }) {
   const navigate = useNavigate();
